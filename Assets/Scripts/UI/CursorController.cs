@@ -10,12 +10,8 @@ public class CursorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // カーソルを自由に動かせる
-        //Cursor.lockState = CursorLockMode.None;
         // カーソルを画面内で動かせる
         UnityEngine.Cursor.lockState = CursorLockMode.Confined;
-        // カーソルを画面中央にロックする
-        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()

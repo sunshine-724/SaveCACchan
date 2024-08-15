@@ -13,16 +13,21 @@ public class Player1 : MonoBehaviour
     /*他クラス*/
     [SerializeField] Player2 player2;
     [SerializeField] PlayerGroundChecker playerGroundChecker;
+    [SerializeField] WeaponManager weaponManager;
 
     /*プロパティ*/
-    Vector3 point; //このプレイヤーの座標
+    public Vector3 point { get;private set; }//このプレイヤーの座標
     int HP; //残機
-    [SerializeField] List<GameObject> damageObject; //ダメージを受けるゲームオブジェクト群
+    public WeaponType weaponType; //持っている武器
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
 
     private void Awake()
     {
+        //初期武器を装備する
+        weaponType = WeaponType.morningstar;
+        weaponManager.ChangeWeapon(weaponType);
+
         rb = this.GetComponent<Rigidbody2D>();
         playerInput = this.GetComponent<PlayerInput>();
 
