@@ -1,0 +1,153 @@
+{
+    "name": "GameInputs",
+    "maps": [
+        {
+            "name": "Player1",
+            "id": "8b2a8529-af44-4df1-9ce7-bc490213be83",
+            "actions": [
+                {
+                    "name": "OnMove",
+                    "type": "Value",
+                    "id": "452d5837-7cd1-4f2e-b3ad-f3820ceaf5e1",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "OnJump",
+                    "type": "Button",
+                    "id": "1a89076c-023d-41ec-8358-4ee8a1cf34c6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c6bea922-93f0-4b82-ab9b-c00adc2dbc9d",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d12f5dd8-933d-4b3c-aae4-58e0e6a5cae9",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnJump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Player2_support",
+            "id": "4b026d7f-4ae8-4015-8221-9d6f833086de",
+            "actions": [
+                {
+                    "name": "putFooting",
+                    "type": "Button",
+                    "id": "7793e188-f4bf-4bdc-b46b-7cea8a22859b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "changeKindOfFooting",
+                    "type": "Button",
+                    "id": "e7c67352-d2c1-4ee4-b3b5-a7c4d0546a13",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "changeLengthOfFooting",
+                    "type": "Button",
+                    "id": "053ccf85-ba92-438b-947d-1889ebcffb1d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "changeKindOfWeapon",
+                    "type": "Button",
+                    "id": "e7892b52-0eaf-48aa-9379-fa68d9ce2bf1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "507ff07f-9cbb-4d95-bd84-a8c9000962ca",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "putFooting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e48d8d95-2e49-4e52-989c-6daa57c99237",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "changeKindOfFooting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41bbf51c-3e08-443d-be95-ad78fb306450",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "changeLengthOfFooting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3a9bed4-be5f-491a-8547-a12efd2083b2",
+                    "path": "<Keyboard>/leftMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "changeKindOfWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "356f9c2c-be11-4a04-8692-f2a8c07ba6c1",
+                    "path": "<Keyboard>/rightMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "changeKindOfWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

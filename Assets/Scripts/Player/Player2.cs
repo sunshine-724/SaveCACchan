@@ -1,0 +1,107 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class Player2 : MonoBehaviour
+{
+    //コンポーネント
+    PlayerInput playerInput;
+
+    /*他クラス*/
+    [SerializeField] Player1 player1;
+    [SerializeField] CursorController cursorController;
+    [SerializeField] FootingManager footingManager;
+    [SerializeField] Circle circle;
+    [SerializeField] WeaponManager weaponManager;
+    [SerializeField] FootingType footingType = FootingType.rectangle; //初期は長方形
+
+    //プロパティ
+    Vector3 point; //このオブジェクトの座標
+
+    private void Awake()
+    {
+        playerInput = this.GetComponent<PlayerInput>();
+        footingManager.ChangeFooting(footingType);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+  
+    }
+
+    private void OnEnable()
+    {
+        //イベント登録
+        playerInput.actions["putFooting"].started += PutFooting;
+        playerInput.actions["changeLengthOfFooting"].performed += StartExtendFooting;
+        playerInput.actions["changeKindOfFooting"].performed += ChangeFootingType;
+
+        playerInput.actions["changeKindOfWeapon"].performed += ChangeWeapon;
+    }
+
+    private void OnDisable()
+    {
+        playerInput.actions["putFooting"].started -= PutFooting;
+        playerInput.actions["changeLengthOfFooting"].performed -= StartExtendFooting;
+        playerInput.actions["changeKindOfFooting"].performed -= ChangeFootingType;
+
+        playerInput.actions["changeKindOfWeapon"].performed -= ChangeWeapon;
+    }
+
+    //CACちゃんを常時追いかける(Update)
+    public void chaseCAC(Vector3 position)
+    {
+        point = position;
+        position.z += 1.0f;
+        this.transform.position = position;
+    }
+
+    //出現する足場を変える
+    void ChangeFootingType(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("足場を変更しました");
+        // インクリメントし、範囲外に出たら最初に戻す
+        footingType = (FootingType)(((int)footingType+1) % Enum.GetValues(typeof(FootingType)).Length);
+        footingManager.ChangeFooting(footingType);
+    }
+
+    //足場を置く
+    void PutFooting(InputAction.CallbackContext ctx)
+    {
+        footingManager.PutFooting(cursorController.point,footingType);
+    }
+
+    //足場を伸ばす(クリックしている時)
+    void StartExtendFooting(InputAction.CallbackContext ctx)
+    {
+        GameObject gameObject = footingManager.SearchFootingObject(cursorController.point); //座標にある足場をとってくる
+        if(gameObject != null)
+        {
+            //足場を伸ばす処理をする
+        }
+        
+    }
+
+    //足場を伸ばす(クリック終了時)
+    void EndExtendFooting(InputAction.CallbackContext ctx)
+    {
+
+    }
+
+    //武器を変更する
+    void ChangeWeapon(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("変更");
+        //今持っている武器を取得する
+        WeaponType currentType = player1.weaponType;
+        //武器を更新する
+        currentType = (WeaponType)(((int)currentType+1) % Enum.GetValues(typeof(WeaponType)).Length);
+        player1.weaponType = currentType;
+        Debug.Log(currentType+"に変更しました");
+
+        weaponManager.ChangeWeapon(currentType);
+    }
+}
