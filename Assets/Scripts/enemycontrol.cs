@@ -145,7 +145,7 @@ public class enemycontrol : MonoBehaviour
             if (hit.collider != null)
             {
                 Debug.Log(hit.collider.gameObject.tag);
-                if (hit.collider.gameObject.tag == "obstacles")
+                if (hit.collider.gameObject.tag == "Obstacles")
                 {
                     Debug.Log("Dammd");
                     GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 300f));

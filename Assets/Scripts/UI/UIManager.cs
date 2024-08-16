@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] List<GameObject> displayWeaponList;
     [SerializeField] List<GameObject> displayFootingList;
+    [SerializeField] List<GameObject> displayHealthList;
 
     public GameObject displayWeapon { get; private set; }
     public GameObject displayFooting { get; private set; }
@@ -49,6 +50,30 @@ public class UIManager : MonoBehaviour
             }
 
             obj.SetActive(false);
+        }
+    }
+
+    public void DecreaseDisplayHealth()
+    {
+        for(int k = 0; k < displayHealthList.Count; k++)
+        {
+            if (displayHealthList[k].activeSelf == true)
+            {
+                displayHealthList[k].SetActive(false);
+                return;
+            }
+        }
+    }
+
+    public void IncreaseDisplayHealth()
+    {
+        for (int k = displayHealthList.Count - 1; k >= 0; k--)
+        {
+            if (displayHealthList[k].activeSelf == false)
+            {
+                displayHealthList[k].SetActive(false);
+                return;
+            }
         }
     }
 }

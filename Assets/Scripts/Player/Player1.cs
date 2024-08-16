@@ -16,8 +16,8 @@ public class Player1 : MonoBehaviour
     [SerializeField] WeaponManager weaponManager;
 
     /*プロパティ*/
-    public Vector3 point { get;private set; }//このプレイヤーの座標
-    int HP; //残機
+    public Vector3 point { get; private set; }//このプレイヤーの座標
+    [SerializeField] int HP = 3; //残機
     public WeaponType weaponType; //持っている武器
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
@@ -170,5 +170,17 @@ public class Player1 : MonoBehaviour
         
         rb.transform.localScale = vector3;
         Debug.Log("rotationしました");
+    }
+
+    //HPを減らす
+    public void DecreaseHP()
+    {
+        HP--;
+
+        //もしHPが0になったら
+        if(HP == 0)
+        {
+
+        }
     }
 }
