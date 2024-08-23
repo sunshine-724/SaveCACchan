@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-[SerializeField] UIManager uiManager;
+    [SerializeField] UIManager uiManager;
 
-[SerializeField] List<GameObject> prefabWeaponObject; //プレハブの武器オブジェクトリスト
+    [SerializeField] List<GameObject> prefabWeaponObject; //プレハブの武器オブジェクトリスト(アクティブ状態の武器だけ使用可能)
 
-// Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
 
@@ -36,6 +36,20 @@ public class WeaponManager : MonoBehaviour
                 continue;
             }
             obj.SetActive(false);
+        }
+    }
+
+    public void Attack(WeaponType type)
+    {
+
+        foreach (GameObject obj in prefabWeaponObject)
+        {
+            Weapon weapon = obj.GetComponent<Weapon>();
+            if (weapon != null && weapon.type == type)
+            {
+                weapon.AttackGun();
+                break;
+            }
         }
     }
 }

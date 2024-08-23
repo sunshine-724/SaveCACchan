@@ -223,19 +223,8 @@ public class Player1 : MonoBehaviour
         switch (weaponType)
         {
             case WeaponType.gun:
-                StartCoroutine(AttackGun());
+                weaponManager.Attack(WeaponType.gun);
                 break;
         }
-    }
-
-    private IEnumerator AttackGun()
-    {
-        Debug.Log("攻撃を開始しました");
-        if(animator != null)
-        {
-
-        }
-
-        yield return null;
     }
 }
