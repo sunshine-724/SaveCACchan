@@ -77,6 +77,7 @@ public class enemycontrol : MonoBehaviour
             now_speed = (transform.position.x - beforePos.x) / Time.deltaTime;
             beforePos = transform.position;
             RaycastHit2D hit = Physics2D.Raycast(transform.position, RayDirection, 15f, 64);
+
             //Raycastがなにかに当たったとき目的とするプレイヤーと同等かを検査,同等の場合追跡状態へ.
             if (patrol_switch && now_speed < serch_limit)
             {
@@ -126,7 +127,7 @@ public class enemycontrol : MonoBehaviour
                 GetComponent<Rigidbody2D>().AddForce(new Vector2(100, 0f));
                 isjump = false;
             }
-            if (Vector3.Distance(transform.position, player_obj.transform.position) < 2)
+            if (Vector3.Distance(transform.position, player_obj.transform.position) < 5)
             {
                 if (isattack)
                 {
@@ -185,6 +186,16 @@ public class enemycontrol : MonoBehaviour
         float temp = move_speed;
         move_speed = 0f;
         //攻撃処理
+        Debug.Log("攻撃開始");
+        Player1 player1 = player_obj.GetComponent<Player1>();
+        if(player1 != null)
+        {
+            player1.DecreaseHP();
+        }
+        else
+        {
+            Debug.Log("null");
+        }
         Debug.Log("Start wait");
 
         yield return new WaitForSeconds(delay1);

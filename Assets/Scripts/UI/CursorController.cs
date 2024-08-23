@@ -55,5 +55,11 @@ public class CursorController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    ////カーソルにあるオブジェクトを取得する
+    //public GameObject GetObjectOnCursor()
+    //{
+    //    RaycastHit2D ray = Physics2D.Raycast(point,)
+    //}
+
     
 }

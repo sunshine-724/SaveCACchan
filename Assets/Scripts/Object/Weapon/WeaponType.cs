@@ -4,7 +4,5 @@ using UnityEngine;
 
 public enum WeaponType
 {
-    morningstar,
-    yari,
-    kunai
+    gun,
 }

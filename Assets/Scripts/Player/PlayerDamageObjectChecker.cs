@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerDamageObjectChecker : MonoBehaviour
 {
-    [SerializeField] UIManager uiManager;
     [SerializeField] Player1 player1;
 
     public bool isDamaged;
@@ -31,9 +30,10 @@ public class PlayerDamageObjectChecker : MonoBehaviour
         }
     }
 
+
+
     void DecreaseHealth()
     {
         player1.DecreaseHP();
-        uiManager.DecreaseDisplayHealth();
     }
 }

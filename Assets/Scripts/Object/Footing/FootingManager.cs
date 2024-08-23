@@ -47,8 +47,7 @@ public class FootingManager : MonoBehaviour
                         GameObject newObj = Instantiate(obj, point, new Quaternion(0.0f, 0.0f, 0.0f, 0.0f));
                         if(newObj != null)
                         {
-                            //新しいオブジェクトに対し、Footingクラスを付与し、識別子(FootingType)を割り振る
-                            Footing newCom =  newObj.AddComponent<Footing>();
+                            Footing newCom =  newObj.GetComponent<Footing>();
                             newCom.Init(footingType);
                             footingObjects.Enqueue(newObj); //現在出現している足場キューに登録
                         }
@@ -77,9 +76,12 @@ public class FootingManager : MonoBehaviour
         {
             //足場がすでに3つある場合、最初に追加した足場を削除し、新たな足場を追加する
             GameObject obj = footingObjects.Peek();
-            Destroy(obj);
-            footingObjects.Dequeue();
-            return true;
+            if (circle.CheckPointinCircle(point))
+            {
+                Destroy(obj);
+                footingObjects.Dequeue();
+                return true;
+            }
         }
         return false;
     }
@@ -105,13 +107,6 @@ public class FootingManager : MonoBehaviour
         }
 
         return null;
-    }
-
-
-    //足場を伸ばす
-    public void ExtendFooting(Vector2 point)
-    {
-        
     }
 
     //足場を変更する

@@ -15,15 +15,18 @@ public class Player2 : MonoBehaviour
     [SerializeField] FootingManager footingManager;
     [SerializeField] Circle circle;
     [SerializeField] WeaponManager weaponManager;
-    [SerializeField] FootingType footingType = FootingType.rectangle; //初期は長方形
+    [SerializeField] FootingType footingType = FootingType.stopRectangle; //初期は動かない長方形
 
     //プロパティ
     Vector3 point; //このオブジェクトの座標
+    private GameObject obj;
+    bool isClicked; //クリックしたかどうか
 
     private void Awake()
     {
         playerInput = this.GetComponent<PlayerInput>();
         footingManager.ChangeFooting(footingType);
+        isClicked = false;
     }
 
     // Update is called once per frame
@@ -38,7 +41,6 @@ public class Player2 : MonoBehaviour
         playerInput.actions["putFooting"].started += PutFooting;
         playerInput.actions["changeLengthOfFooting"].performed += StartExtendFooting;
         playerInput.actions["changeKindOfFooting"].performed += ChangeFootingType;
-
         playerInput.actions["changeKindOfWeapon"].performed += ChangeWeapon;
     }
 
@@ -77,17 +79,46 @@ public class Player2 : MonoBehaviour
     //足場を伸ばす(クリックしている時)
     void StartExtendFooting(InputAction.CallbackContext ctx)
     {
-        GameObject gameObject = footingManager.SearchFootingObject(cursorController.point); //座標にある足場をとってくる
-        if(gameObject != null)
+        if (!isClicked)
         {
-            //足場を伸ばす処理をする
+            obj = footingManager.SearchFootingObject(cursorController.point); //クリック座標にある足場をとってくる
+            if(obj != null)
+            {
+                Debug.Log("足場をクリックしました");
+            }
+            else
+            {
+                Debug.Log("クリックを開始しました");
+            }
+            isClicked = true;
         }
-        
-    }
-
-    //足場を伸ばす(クリック終了時)
-    void EndExtendFooting(InputAction.CallbackContext ctx)
-    {
+        else
+        {
+            Debug.Log("クリック終了しました");
+            if(obj != null)
+            {
+                Footing footing = obj.GetComponent<Footing>();
+                if (footing != null)
+                {
+                    footing.FinishChangeRight();
+                }
+            }
+            isClicked = false;
+        }
+        //if (ctx.phase == InputActionPhase.Started)
+        //{
+        //    Debug.Log("クリックを開始しました");
+        //    gameObject = footingManager.SearchFootingObject(cursorController.point); // クリック座標にある足場を取得する
+        //}
+        //else if (ctx.phase == InputActionPhase.Canceled)
+        //{
+        //    Debug.Log("クリック終了しました");
+        //    Footing footing = gameObject.GetComponent<Footing>();
+        //    if (footing != null)
+        //    {
+        //        footing.FinishChangeRight();
+        //    }
+        //}
 
     }
 

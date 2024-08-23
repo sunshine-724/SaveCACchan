@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum FootingType
 {
-    rectangle,
-    triangle,
+    stopRectangle,
+    moveUpRectangle,
+    moveDownRectangle
 }

@@ -44,6 +44,15 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f941b20-a8b8-42e9-a0ff-342814ad62c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -66,6 +75,17 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OnJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""320189b0-9b3b-4e03-aaf4-02ad1de01ddc"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -139,7 +159,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""41bbf51c-3e08-443d-be95-ad78fb306450"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""changeLengthOfFooting"",
@@ -177,6 +197,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_Player1 = asset.FindActionMap("Player1", throwIfNotFound: true);
         m_Player1_OnMove = m_Player1.FindAction("OnMove", throwIfNotFound: true);
         m_Player1_OnJump = m_Player1.FindAction("OnJump", throwIfNotFound: true);
+        m_Player1_Attack = m_Player1.FindAction("Attack", throwIfNotFound: true);
         // Player2_support
         m_Player2_support = asset.FindActionMap("Player2_support", throwIfNotFound: true);
         m_Player2_support_putFooting = m_Player2_support.FindAction("putFooting", throwIfNotFound: true);
@@ -246,12 +267,14 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     private List<IPlayer1Actions> m_Player1ActionsCallbackInterfaces = new List<IPlayer1Actions>();
     private readonly InputAction m_Player1_OnMove;
     private readonly InputAction m_Player1_OnJump;
+    private readonly InputAction m_Player1_Attack;
     public struct Player1Actions
     {
         private @GameInputs m_Wrapper;
         public Player1Actions(@GameInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @OnMove => m_Wrapper.m_Player1_OnMove;
         public InputAction @OnJump => m_Wrapper.m_Player1_OnJump;
+        public InputAction @Attack => m_Wrapper.m_Player1_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Player1; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -267,6 +290,9 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @OnJump.started += instance.OnOnJump;
             @OnJump.performed += instance.OnOnJump;
             @OnJump.canceled += instance.OnOnJump;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IPlayer1Actions instance)
@@ -277,6 +303,9 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @OnJump.started -= instance.OnOnJump;
             @OnJump.performed -= instance.OnOnJump;
             @OnJump.canceled -= instance.OnOnJump;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IPlayer1Actions instance)
@@ -368,6 +397,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     {
         void OnOnMove(InputAction.CallbackContext context);
         void OnOnJump(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
     public interface IPlayer2_supportActions
     {

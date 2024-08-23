@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 //CACちゃん本体にアタッチするスクリプト
 public class Player1 : MonoBehaviour
@@ -14,22 +16,29 @@ public class Player1 : MonoBehaviour
     [SerializeField] Player2 player2;
     [SerializeField] PlayerGroundChecker playerGroundChecker;
     [SerializeField] WeaponManager weaponManager;
+    [SerializeField] UIManager uiManager;
 
-    /*プロパティ*/
+
     public Vector3 point { get; private set; }//このプレイヤーの座標
     [SerializeField] int HP = 3; //残機
     public WeaponType weaponType; //持っている武器
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
 
+    private bool invincible = false; //このキャラが無敵かどうか
+    [SerializeField] float invincibleTime = 1.5f; //無敵時間
+
+    //武器のアニメーター
+    private Animator animator;
+
     private void Awake()
     {
         //初期武器を装備する
-        weaponType = WeaponType.morningstar;
         weaponManager.ChangeWeapon(weaponType);
 
         rb = this.GetComponent<Rigidbody2D>();
         playerInput = this.GetComponent<PlayerInput>();
+        animator = this.GetComponent<Animator>();
 
         if(playerInput == null)
         {
@@ -67,6 +76,7 @@ public class Player1 : MonoBehaviour
         playerInput.actions["OnMove"].performed += OnMove;
         playerInput.actions["OnMove"].canceled += OnMove;
         playerInput.actions["OnJump"].started += OnJump;
+        playerInput.actions["Attack"].performed += Attack;
     }
 
     private void OnDisable()
@@ -76,6 +86,7 @@ public class Player1 : MonoBehaviour
         playerInput.actions["OnMove"].performed -= OnMove;
         playerInput.actions["OnMove"].canceled -= OnMove;
         playerInput.actions["OnJump"].started -= OnJump;
+        playerInput.actions["Attack"].performed -= Attack;
     }
 
     private void OnMove(InputAction.CallbackContext ctx)
@@ -161,11 +172,11 @@ public class Player1 : MonoBehaviour
         Vector3 vector3 = rb.transform.localScale;
         if(value.x > 0)
         {
-            vector3.x = 1;
+            vector3.x = 0.6f;
         }
         else
         {
-            vector3.x = -1;
+            vector3.x = -0.6f;
         }
         
         rb.transform.localScale = vector3;
@@ -175,12 +186,56 @@ public class Player1 : MonoBehaviour
     //HPを減らす
     public void DecreaseHP()
     {
-        HP--;
+        //無敵ではなかったら
+        if (!invincible)
+        {
+            //プレイヤーを止める
+            if(rb != null)
+            {
+                Vector3 tmp = new Vector3(0.0f, rb.velocity.y, 0);
+                rb.velocity = tmp;
+            }
+           
+
+            HP--;
+            uiManager.DecreaseDisplayHealth();
+            StartCoroutine(AffectInvincible()); //一定時間無敵を付与する
+        }
 
         //もしHPが0になったら
-        if(HP == 0)
+        if (HP == 0)
         {
 
         }
+    }
+
+    IEnumerator AffectInvincible()
+    {
+        invincible = true; //一定時間無敵にする
+        yield return new WaitForSeconds(invincibleTime);
+        invincible = false; //無敵解除
+    }
+
+    //武器で攻撃する
+    //受け取った武器に応じて攻撃する
+    public void Attack(InputAction.CallbackContext ctx)
+    {
+        switch (weaponType)
+        {
+            case WeaponType.gun:
+                StartCoroutine(AttackGun());
+                break;
+        }
+    }
+
+    private IEnumerator AttackGun()
+    {
+        Debug.Log("攻撃を開始しました");
+        if(animator != null)
+        {
+
+        }
+
+        yield return null;
     }
 }
