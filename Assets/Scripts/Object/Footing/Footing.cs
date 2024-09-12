@@ -57,60 +57,116 @@ public class Footing : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    //void Update()
+    //{
+    //    currentPoint = this.transform.position;
+
+    //    //必要に応じて足場を伸ばす
+    //    StreachFooting();
+
+    //    //if (canChangeLeftLength)
+    //    //{
+    //    //    // 現在のマウスデバイスを取得
+    //    //    var mouse = Mouse.current;
+    //    //    if (mouse != null)
+    //    //    {
+    //    //        //マウスの移動量を取得する
+    //    //        Vector2 mouseDelta = mouse.delta.ReadValue();
+    //    //        mouseDelta *= -1;
+    //    //        Vector2 newCenterPoint = new Vector2(currentPoint.x - (mouseDelta.x) / 2, currentPoint.y);
+    //    //        Debug.Log("右端を変更しています");
+
+    //    //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
+    //    //        Debug.Log(magnification * this.transform.localScale.x);
+    //    //        //magnification *= correction;
+    //    //        if (magnification * this.transform.localScale.x > 0.1f)
+    //    //        {
+    //    //            this.transform.position = newCenterPoint;
+    //    //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+    //    //        }
+    //    //    }
+    //    //}
+    //    //else if (canChangeRightLength)
+    //    //{
+    //    //    // 現在のマウスデバイスを取得
+    //    //    var mouse = Mouse.current;
+    //    //    if (mouse != null)
+    //    //    {
+    //    //        //マウスの移動量を取得する
+    //    //        Vector2 mouseDelta = mouse.delta.ReadValue();
+    //    //        Vector2 newCenterPoint = new Vector2(currentPoint.x + (mouseDelta.x) / 2, currentPoint.y);
+
+    //    //        //中心座標をずらす
+    //    //        Debug.Log("左端を変更しています");
+
+    //    //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
+    //    //        //magnification *= correction;
+    //    //        if(magnification*this.transform.localScale.x > 0.1f)
+    //    //        {
+    //    //            this.transform.position = newCenterPoint;
+    //    //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+    //    //        }
+    //    //    }
+    //    //}
+
+    //    //足場を移動する
+    //    OnMove();
+    //}
+
+    private void FixedUpdate()
     {
-        currentPoint = this.transform.position;
+            currentPoint = this.transform.position;
 
-        //必要に応じて足場を伸ばす
-        StreachFooting();
+            //必要に応じて足場を伸ばす
+            StreachFooting();
 
-        //if (canChangeLeftLength)
-        //{
-        //    // 現在のマウスデバイスを取得
-        //    var mouse = Mouse.current;
-        //    if (mouse != null)
-        //    {
-        //        //マウスの移動量を取得する
-        //        Vector2 mouseDelta = mouse.delta.ReadValue();
-        //        mouseDelta *= -1;
-        //        Vector2 newCenterPoint = new Vector2(currentPoint.x - (mouseDelta.x) / 2, currentPoint.y);
-        //        Debug.Log("右端を変更しています");
+            //if (canChangeLeftLength)
+            //{
+            //    // 現在のマウスデバイスを取得
+            //    var mouse = Mouse.current;
+            //    if (mouse != null)
+            //    {
+            //        //マウスの移動量を取得する
+            //        Vector2 mouseDelta = mouse.delta.ReadValue();
+            //        mouseDelta *= -1;
+            //        Vector2 newCenterPoint = new Vector2(currentPoint.x - (mouseDelta.x) / 2, currentPoint.y);
+            //        Debug.Log("右端を変更しています");
 
-        //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
-        //        Debug.Log(magnification * this.transform.localScale.x);
-        //        //magnification *= correction;
-        //        if (magnification * this.transform.localScale.x > 0.1f)
-        //        {
-        //            this.transform.position = newCenterPoint;
-        //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
-        //        }
-        //    }
-        //}
-        //else if (canChangeRightLength)
-        //{
-        //    // 現在のマウスデバイスを取得
-        //    var mouse = Mouse.current;
-        //    if (mouse != null)
-        //    {
-        //        //マウスの移動量を取得する
-        //        Vector2 mouseDelta = mouse.delta.ReadValue();
-        //        Vector2 newCenterPoint = new Vector2(currentPoint.x + (mouseDelta.x) / 2, currentPoint.y);
+            //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
+            //        Debug.Log(magnification * this.transform.localScale.x);
+            //        //magnification *= correction;
+            //        if (magnification * this.transform.localScale.x > 0.1f)
+            //        {
+            //            this.transform.position = newCenterPoint;
+            //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+            //        }
+            //    }
+            //}
+            //else if (canChangeRightLength)
+            //{
+            //    // 現在のマウスデバイスを取得
+            //    var mouse = Mouse.current;
+            //    if (mouse != null)
+            //    {
+            //        //マウスの移動量を取得する
+            //        Vector2 mouseDelta = mouse.delta.ReadValue();
+            //        Vector2 newCenterPoint = new Vector2(currentPoint.x + (mouseDelta.x) / 2, currentPoint.y);
 
-        //        //中心座標をずらす
-        //        Debug.Log("左端を変更しています");
+            //        //中心座標をずらす
+            //        Debug.Log("左端を変更しています");
 
-        //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
-        //        //magnification *= correction;
-        //        if(magnification*this.transform.localScale.x > 0.1f)
-        //        {
-        //            this.transform.position = newCenterPoint;
-        //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
-        //        }
-        //    }
-        //}
+            //        float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
+            //        //magnification *= correction;
+            //        if(magnification*this.transform.localScale.x > 0.1f)
+            //        {
+            //            this.transform.position = newCenterPoint;
+            //            this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+            //        }
+            //    }
+            //}
 
-        //足場を移動する
-        OnMove();
+            //足場を移動する
+            OnMove();
     }
 
     //必要に応じて足場を伸ばす
@@ -131,11 +187,16 @@ public class Footing : MonoBehaviour
                 float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
                 Debug.Log(magnification * this.transform.localScale.x);
                 //magnification *= correction;
-                if (magnification * this.transform.localScale.x > 0.1f)
+                if(0.2f < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < 6.0f)
                 {
                     this.transform.position = newCenterPoint;
                     this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
                 }
+                //if (magnification * this.transform.localScale.x > 0.2f)
+                //{
+                //    this.transform.position = newCenterPoint;
+                //    this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+                //}
             }
         }
         else if (canChangeRightLength)
@@ -153,7 +214,13 @@ public class Footing : MonoBehaviour
 
                 float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
                 //magnification *= correction;
-                if (magnification * this.transform.localScale.x > 0.1f)
+                //if (magnification * this.transform.localScale.x > 0.2f)
+                //{
+                //    this.transform.position = newCenterPoint;
+                //    this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
+                //}
+
+                if(0.2f < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < 6.0f)
                 {
                     this.transform.position = newCenterPoint;
                     this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);

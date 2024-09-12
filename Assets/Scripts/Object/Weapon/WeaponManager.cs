@@ -19,7 +19,7 @@ public class WeaponManager : MonoBehaviour
     //受け取った武器に変更する
     public void ChangeWeapon(WeaponType weaponType)
     {
-        Debug.Log(weaponType + "に切り替えました");
+        //Debug.Log(weaponType + "に切り替えました");
         DoActive(weaponType);
         uiManager.ChangeDisplayWeapon(weaponType);
     }
