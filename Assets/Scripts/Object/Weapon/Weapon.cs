@@ -8,15 +8,9 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] GameObject bullet; //銃弾
     [SerializeField] float existBulletTime = 1.5f; //銃弾の存在時間
-    [SerializeField] float bulletSpeed = 1.0f; //銃弾のスピード
-    bool isMoveBullet = false;
+    [SerializeField] int maxBulletNumber = 3; //同時に存在できる銃弾の数
 
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
-
+    int currentBulletNumber = 0;
     public void AttackGun()
     {
         Vector3 bulletPositon = this.transform.position;
@@ -27,16 +21,26 @@ public class Weapon : MonoBehaviour
 
     private IEnumerator ShotBullet(Vector3 pos)
     {
-        GameObject obj =  Instantiate(bullet,this.transform);
-
-
-        yield return new WaitForSeconds(bulletSpeed);
-
-
-        if(obj != null)
+        GameObject fireObj = null;
+        if(currentBulletNumber < maxBulletNumber)
         {
-            Destroy(obj);
+            fireObj = Instantiate(bullet, this.transform);
+            if (fireObj != null)
+            {
+                currentBulletNumber++;
+            }
+        }
+        else
+        {
+            yield break;
         }
 
+        yield return new WaitForSeconds(existBulletTime);
+
+        if(fireObj != null)
+        {
+            currentBulletNumber--;
+            Destroy(fireObj);
+        }
     }
 }

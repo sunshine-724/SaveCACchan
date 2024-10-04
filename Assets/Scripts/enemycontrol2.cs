@@ -149,7 +149,7 @@ public class enemycontrol2 : MonoBehaviour
             StartCoroutine(StopChaseTemporarily());
             Debug.Log(collision.gameObject.name);
             //攻撃処理です、下のコメント外したら使えます。
-            //collision.gameObject.GetComponent<Player1>().DecreaseHP();
+            collision.gameObject.GetComponent<Player1>().DecreaseHP();
         }
     }
 

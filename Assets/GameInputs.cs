@@ -189,6 +189,94 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Player1(debug)"",
+            ""id"": ""5c5c5b58-ea06-4dfc-92f2-7710cd5fa26e"",
+            ""actions"": [
+                {
+                    ""name"": ""OnRightMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""b0fc1418-2211-4bd0-ac9d-6e6b32bdcbf5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OnLeftMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""69a0da0c-aba0-4f21-bf52-ac94261b64a4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OnJump"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f3d19af-4ac6-4179-a15b-f69b66d97990"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""2cf8824c-0c28-461c-809a-5a2233f49835"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""692c19ed-089c-47a9-823f-ecf9f50e12f4"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnRightMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""99c911b8-b36b-46a5-9159-ed7b91c71433"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnLeftMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c5d59c35-4ecb-4fff-9a85-91e730cea2e0"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b20e8dde-bb08-41e6-8516-4a2be7f57dc3"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -204,6 +292,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_Player2_support_changeKindOfFooting = m_Player2_support.FindAction("changeKindOfFooting", throwIfNotFound: true);
         m_Player2_support_changeLengthOfFooting = m_Player2_support.FindAction("changeLengthOfFooting", throwIfNotFound: true);
         m_Player2_support_changeKindOfWeapon = m_Player2_support.FindAction("changeKindOfWeapon", throwIfNotFound: true);
+        // Player1(debug)
+        m_Player1debug = asset.FindActionMap("Player1(debug)", throwIfNotFound: true);
+        m_Player1debug_OnRightMove = m_Player1debug.FindAction("OnRightMove", throwIfNotFound: true);
+        m_Player1debug_OnLeftMove = m_Player1debug.FindAction("OnLeftMove", throwIfNotFound: true);
+        m_Player1debug_OnJump = m_Player1debug.FindAction("OnJump", throwIfNotFound: true);
+        m_Player1debug_Attack = m_Player1debug.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -393,6 +487,76 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         }
     }
     public Player2_supportActions @Player2_support => new Player2_supportActions(this);
+
+    // Player1(debug)
+    private readonly InputActionMap m_Player1debug;
+    private List<IPlayer1debugActions> m_Player1debugActionsCallbackInterfaces = new List<IPlayer1debugActions>();
+    private readonly InputAction m_Player1debug_OnRightMove;
+    private readonly InputAction m_Player1debug_OnLeftMove;
+    private readonly InputAction m_Player1debug_OnJump;
+    private readonly InputAction m_Player1debug_Attack;
+    public struct Player1debugActions
+    {
+        private @GameInputs m_Wrapper;
+        public Player1debugActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OnRightMove => m_Wrapper.m_Player1debug_OnRightMove;
+        public InputAction @OnLeftMove => m_Wrapper.m_Player1debug_OnLeftMove;
+        public InputAction @OnJump => m_Wrapper.m_Player1debug_OnJump;
+        public InputAction @Attack => m_Wrapper.m_Player1debug_Attack;
+        public InputActionMap Get() { return m_Wrapper.m_Player1debug; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(Player1debugActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayer1debugActions instance)
+        {
+            if (instance == null || m_Wrapper.m_Player1debugActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_Player1debugActionsCallbackInterfaces.Add(instance);
+            @OnRightMove.started += instance.OnOnRightMove;
+            @OnRightMove.performed += instance.OnOnRightMove;
+            @OnRightMove.canceled += instance.OnOnRightMove;
+            @OnLeftMove.started += instance.OnOnLeftMove;
+            @OnLeftMove.performed += instance.OnOnLeftMove;
+            @OnLeftMove.canceled += instance.OnOnLeftMove;
+            @OnJump.started += instance.OnOnJump;
+            @OnJump.performed += instance.OnOnJump;
+            @OnJump.canceled += instance.OnOnJump;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
+        }
+
+        private void UnregisterCallbacks(IPlayer1debugActions instance)
+        {
+            @OnRightMove.started -= instance.OnOnRightMove;
+            @OnRightMove.performed -= instance.OnOnRightMove;
+            @OnRightMove.canceled -= instance.OnOnRightMove;
+            @OnLeftMove.started -= instance.OnOnLeftMove;
+            @OnLeftMove.performed -= instance.OnOnLeftMove;
+            @OnLeftMove.canceled -= instance.OnOnLeftMove;
+            @OnJump.started -= instance.OnOnJump;
+            @OnJump.performed -= instance.OnOnJump;
+            @OnJump.canceled -= instance.OnOnJump;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
+        }
+
+        public void RemoveCallbacks(IPlayer1debugActions instance)
+        {
+            if (m_Wrapper.m_Player1debugActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlayer1debugActions instance)
+        {
+            foreach (var item in m_Wrapper.m_Player1debugActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_Player1debugActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public Player1debugActions @Player1debug => new Player1debugActions(this);
     public interface IPlayer1Actions
     {
         void OnOnMove(InputAction.CallbackContext context);
@@ -405,5 +569,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         void OnChangeKindOfFooting(InputAction.CallbackContext context);
         void OnChangeLengthOfFooting(InputAction.CallbackContext context);
         void OnChangeKindOfWeapon(InputAction.CallbackContext context);
+    }
+    public interface IPlayer1debugActions
+    {
+        void OnOnRightMove(InputAction.CallbackContext context);
+        void OnOnLeftMove(InputAction.CallbackContext context);
+        void OnOnJump(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

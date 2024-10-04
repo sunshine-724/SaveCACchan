@@ -5,6 +5,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
+public enum InputMode
+{
+    keyboard, //デバッグ用
+    keyboardAndGamePad, //本番環境
+}
+
 //CACちゃん本体にアタッチするスクリプト
 public class Player1 : MonoBehaviour
 {
@@ -15,10 +21,10 @@ public class Player1 : MonoBehaviour
     /*他クラス*/
     [SerializeField] Player2 player2;
     [SerializeField] PlayerGroundChecker playerGroundChecker;
-    [SerializeField] WeaponManager weaponManager;
+    //[SerializeField] WeaponManager weaponManager;
     [SerializeField] UIManager uiManager;
 
-
+    //ステータス
     public Vector3 point { get; private set; }//このプレイヤーの座標
     [SerializeField] int HP = 3; //残機
     public WeaponType weaponType; //持っている武器
@@ -28,13 +34,22 @@ public class Player1 : MonoBehaviour
     private bool invincible = false; //このキャラが無敵かどうか
     [SerializeField] float invincibleTime = 1.5f; //無敵時間
 
-    //武器のアニメーター
-    private Animator animator;
+    //アニメーター
+    [SerializeField] Animator animPlayer1; //プレイヤー1のアニメーター
+    private Animator animator; //武器のアニメーター
+
+    //Inputの種類
+    [SerializeField] InputMode inputMode = InputMode.keyboardAndGamePad;
+
+    //デバッグモード(InputMode.keyboard)のみ
+    float lastInputTime;
+    [SerializeField] float timeoutDuration = 0.3f; // 何秒間の無入力状態を許容するか
+
 
     private void Awake()
     {
-        //初期武器を装備する
-        weaponManager.ChangeWeapon(weaponType);
+        ////初期武器を装備する
+        //weaponManager.ChangeWeapon(weaponType);
 
         rb = this.GetComponent<Rigidbody2D>();
         playerInput = this.GetComponent<PlayerInput>();
@@ -67,26 +82,64 @@ public class Player1 : MonoBehaviour
     {
         point = rb.transform.position;
         player2.chaseCAC(this.transform.position);
+
+        if(inputMode == InputMode.keyboard)
+        {
+            //もし一定時間入力がなければ止まる(debugモードのみ)
+            if (Time.time - lastInputTime > timeoutDuration)
+            {
+                Vector2 stopVector2 = new Vector2(0.0f, 0.0f);
+                Move(stopVector2);
+            }
+        }
     }
 
     private void OnEnable()
     {
         //イベント登録
-        playerInput.actions["OnMove"].started += OnMove;
-        playerInput.actions["OnMove"].performed += OnMove;
-        playerInput.actions["OnMove"].canceled += OnMove;
-        playerInput.actions["OnJump"].started += OnJump;
-        playerInput.actions["Attack"].performed += Attack;
+        if(inputMode == InputMode.keyboardAndGamePad)
+        {
+            playerInput.actions["OnMove"].started += OnMove;
+            playerInput.actions["OnMove"].performed += OnMove;
+            playerInput.actions["OnMove"].canceled += OnMove;
+            playerInput.actions["OnJump"].started += OnJump;
+            playerInput.actions["Attack"].performed += Attack;
+        }
+        else if(inputMode == InputMode.keyboard)
+        {
+            playerInput.actions["OnRightMove"].performed += OnRightMove;
+            playerInput.actions["OnLeftMove"].performed += OnLeftMove;
+            playerInput.actions["OnJump"].performed += OnJump;
+            playerInput.actions["Attack"].performed += Attack;
+
+            playerInput.onActionTriggered += OnActionTriggered; //任意のアクション時起動
+        }
     }
 
     private void OnDisable()
     {
         //イベント削除
-        playerInput.actions["OnMove"].started -= OnMove;
-        playerInput.actions["OnMove"].performed -= OnMove;
-        playerInput.actions["OnMove"].canceled -= OnMove;
-        playerInput.actions["OnJump"].started -= OnJump;
-        playerInput.actions["Attack"].performed -= Attack;
+        if(inputMode == InputMode.keyboardAndGamePad)
+        {
+            playerInput.actions["OnMove"].started -= OnMove;
+            playerInput.actions["OnMove"].performed -= OnMove;
+            playerInput.actions["OnMove"].canceled -= OnMove;
+            playerInput.actions["OnJump"].started -= OnJump;
+            playerInput.actions["Attack"].performed -= Attack;
+        }else if(inputMode == InputMode.keyboard)
+        {
+            playerInput.actions["OnRightMove"].performed += OnRightMove;
+            playerInput.actions["OnLeftMove"].performed += OnLeftMove;
+            playerInput.actions["OnJump"].performed += OnJump;
+            playerInput.actions["Attack"].performed += Attack;
+
+            playerInput.onActionTriggered -= OnActionTriggered;
+        }
+    }
+
+    private void OnActionTriggered(InputAction.CallbackContext ctx)
+    {
+        lastInputTime = Time.time; //入力された最新の時間を記録する
     }
 
     private void OnMove(InputAction.CallbackContext ctx)
@@ -96,26 +149,44 @@ public class Player1 : MonoBehaviour
         Move(value);
     }
 
+    private void OnRightMove(InputAction.CallbackContext ctx)
+    {
+        Vector2 value = new Vector2(1.0f, 0.0f);
+        Move(value);
+    }
+
+    private void OnLeftMove(InputAction.CallbackContext ctx)
+    {
+        Vector2 value = new Vector2(-1.0f, 0.0f);
+        Move(value);
+    }
+
     private void Move(Vector2 value)
     {
         //2値化処理
-        if (value.x >= 0.3f)
+        if (value.x >= 0.2f)
         {
             value = Right(value);
+            animPlayer1.SetBool("isLeftRun", false);
+            animPlayer1.SetBool("isRightRun", true);
         }
-        else if (value.x <= -0.3f)
+        else if (value.x <= -0.2f)
         {
             value = Left(value);
+            animPlayer1.SetBool("isRightRun", false);
+            animPlayer1.SetBool("isLeftRun", true);
         }
         else
         {
             Debug.Log("止まりました");
             this.rb.velocity = new Vector2(0.0f, 0.0f); //停止
+            animPlayer1.SetBool("isLeftRun", false);
+            animPlayer1.SetBool("isRightRun", false);
             return;
         }
         value.x = value.x * horizonSpeed;
 
-        rb.AddForce(value, ForceMode2D.Impulse);
+        rb.AddForce(value, ForceMode2D.Impulse); //プレイヤーに力を加え移動させる
     }
 
     Vector2 Right(Vector2 value)
@@ -123,7 +194,7 @@ public class Player1 : MonoBehaviour
         if (this.rb.velocity.x <= 0)
         {
             value.x = 1.0f;
-            ChangePlayerRotation(value);
+            //ChangePlayerRotation(value);
             //Debug.Log("右に移動しています");
         }
         else
@@ -140,7 +211,7 @@ public class Player1 : MonoBehaviour
         if (this.rb.velocity.x >= 0)
         {
             value.x = -1.0f;
-            ChangePlayerRotation(value);
+            //ChangePlayerRotation(value);
             //Debug.Log("左に移動しています");
         }
         else
@@ -162,26 +233,27 @@ public class Player1 : MonoBehaviour
         }
         float value = ctx.ReadValue<float>();
         Vector2 v = new Vector2(0, value*verticalSpeed);
+        animPlayer1.SetTrigger("JumpTrigger"); //ジャンプアニメーション起動
         rb.AddForce(v,ForceMode2D.Impulse);
-        //Debug.Log("ジャンプしています");
+        Debug.Log("ジャンプしています");
     }
 
     //プレイヤーの向き(左右)を変更する
-    void ChangePlayerRotation(Vector2 value)
-    {
-        Vector3 vector3 = rb.transform.localScale;
-        if(value.x > 0)
-        {
-            vector3.x = 0.6f;
-        }
-        else
-        {
-            vector3.x = -0.6f;
-        }
+    //void ChangePlayerRotation(Vector2 value)
+    //{
+    //    Vector3 vector3 = rb.transform.localScale;
+    //    if(value.x > 0)
+    //    {
+    //        vector3.x = 1.0f;
+    //    }
+    //    else
+    //    {
+    //        vector3.x = -1.0f;
+    //    }
         
-        rb.transform.localScale = vector3;
-        Debug.Log("rotationしました");
-    }
+    //    rb.transform.localScale = vector3;
+    //    Debug.Log("rotationしました");
+    //}
 
     //HPを減らす
     public void DecreaseHP()
@@ -223,7 +295,8 @@ public class Player1 : MonoBehaviour
         switch (weaponType)
         {
             case WeaponType.gun:
-                weaponManager.Attack(WeaponType.gun);
+                //weaponManager.Attack(WeaponType.gun);
+                animPlayer1.SetTrigger("AttackTrigger");
                 break;
         }
     }

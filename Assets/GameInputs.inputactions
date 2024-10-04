@@ -167,6 +167,94 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Player1(debug)",
+            "id": "5c5c5b58-ea06-4dfc-92f2-7710cd5fa26e",
+            "actions": [
+                {
+                    "name": "OnRightMove",
+                    "type": "Button",
+                    "id": "b0fc1418-2211-4bd0-ac9d-6e6b32bdcbf5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OnLeftMove",
+                    "type": "Button",
+                    "id": "69a0da0c-aba0-4f21-bf52-ac94261b64a4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "OnJump",
+                    "type": "Button",
+                    "id": "6f3d19af-4ac6-4179-a15b-f69b66d97990",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "2cf8824c-0c28-461c-809a-5a2233f49835",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "692c19ed-089c-47a9-823f-ecf9f50e12f4",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnRightMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99c911b8-b36b-46a5-9159-ed7b91c71433",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnLeftMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c5d59c35-4ecb-4fff-9a85-91e730cea2e0",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnJump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b20e8dde-bb08-41e6-8516-4a2be7f57dc3",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
