@@ -11,6 +11,12 @@ public enum InputMode
     keyboardAndGamePad, //本番環境
 }
 
+public enum Direction
+{
+    left,
+    right,
+}
+
 //CACちゃん本体にアタッチするスクリプト
 public class Player1 : MonoBehaviour
 {
@@ -21,6 +27,7 @@ public class Player1 : MonoBehaviour
     /*他クラス*/
     [SerializeField] Player2 player2;
     [SerializeField] PlayerGroundChecker playerGroundChecker;
+    [SerializeField] CameraSensor cameraSensor;
     //[SerializeField] WeaponManager weaponManager;
     [SerializeField] UIManager uiManager;
 
@@ -30,7 +37,9 @@ public class Player1 : MonoBehaviour
     public WeaponType weaponType; //持っている武器
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
+    [SerializeField] Direction direction = Direction.right; //現在向いている向き
 
+    private bool isPriorityJumpAnimation = false; //ジャンプアニメーションを優先するかどうか
     private bool invincible = false; //このキャラが無敵かどうか
     [SerializeField] float invincibleTime = 1.5f; //無敵時間
 
@@ -92,6 +101,15 @@ public class Player1 : MonoBehaviour
                 Move(stopVector2);
             }
         }
+
+        if (direction == Direction.left)
+        {
+            animPlayer1.SetFloat("BlendParam", 0);
+        }
+        else
+        {
+            animPlayer1.SetFloat("BlendParam", 1);
+        }
     }
 
     private void OnEnable()
@@ -128,10 +146,10 @@ public class Player1 : MonoBehaviour
             playerInput.actions["Attack"].performed -= Attack;
         }else if(inputMode == InputMode.keyboard)
         {
-            playerInput.actions["OnRightMove"].performed += OnRightMove;
-            playerInput.actions["OnLeftMove"].performed += OnLeftMove;
-            playerInput.actions["OnJump"].performed += OnJump;
-            playerInput.actions["Attack"].performed += Attack;
+            playerInput.actions["OnRightMove"].performed -= OnRightMove;
+            playerInput.actions["OnLeftMove"].performed -= OnLeftMove;
+            playerInput.actions["OnJump"].performed -= OnJump;
+            playerInput.actions["Attack"].performed -= Attack;
 
             playerInput.onActionTriggered -= OnActionTriggered;
         }
@@ -169,12 +187,19 @@ public class Player1 : MonoBehaviour
             value = Right(value);
             animPlayer1.SetBool("isLeftRun", false);
             animPlayer1.SetBool("isRightRun", true);
+            animPlayer1.SetBool("isRight", true);
+            animPlayer1.SetBool("isLeft", false);
+
+            direction = Direction.right;
         }
         else if (value.x <= -0.2f)
         {
             value = Left(value);
             animPlayer1.SetBool("isRightRun", false);
             animPlayer1.SetBool("isLeftRun", true);
+            animPlayer1.SetBool("isRight", false);
+            animPlayer1.SetBool("isLeft", true);
+            direction = Direction.left;
         }
         else
         {
@@ -182,6 +207,7 @@ public class Player1 : MonoBehaviour
             this.rb.velocity = new Vector2(0.0f, 0.0f); //停止
             animPlayer1.SetBool("isLeftRun", false);
             animPlayer1.SetBool("isRightRun", false);
+            cameraSensor.StopPlayer();
             return;
         }
         value.x = value.x * horizonSpeed;
@@ -233,9 +259,51 @@ public class Player1 : MonoBehaviour
         }
         float value = ctx.ReadValue<float>();
         Vector2 v = new Vector2(0, value*verticalSpeed);
+        if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+        {
+            isPriorityJumpAnimation = true;
+            animPlayer1.SetBool("isRightRun", false);
+            animPlayer1.SetBool("isLeftRun", false);
+        }
+
         animPlayer1.SetTrigger("JumpTrigger"); //ジャンプアニメーション起動
         rb.AddForce(v,ForceMode2D.Impulse);
+        StartCoroutine(WaitJumped());
         Debug.Log("ジャンプしています");
+    }
+
+    private IEnumerator WaitJumped()
+    {
+        while (!isJumpedAnimation())
+        {
+            yield return null;
+        }
+
+        if (isPriorityJumpAnimation)
+        {
+            isPriorityJumpAnimation = false;
+
+            if (direction == Direction.right)
+            {
+                animPlayer1.SetBool("isRightRun", true);
+            }
+            else
+            {
+                animPlayer1.SetBool("isLeftRun", true);
+            }
+        }
+    }
+
+    private bool isJumpedAnimation()
+    {
+        // アニメーションの進行状態を確認
+        AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Jump"))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     //プレイヤーの向き(左右)を変更する
@@ -250,7 +318,7 @@ public class Player1 : MonoBehaviour
     //    {
     //        vector3.x = -1.0f;
     //    }
-        
+
     //    rb.transform.localScale = vector3;
     //    Debug.Log("rotationしました");
     //}
@@ -268,7 +336,6 @@ public class Player1 : MonoBehaviour
                 rb.velocity = tmp;
             }
            
-
             HP--;
             uiManager.DecreaseDisplayHealth();
             StartCoroutine(AffectInvincible()); //一定時間無敵を付与する
@@ -296,6 +363,8 @@ public class Player1 : MonoBehaviour
         {
             case WeaponType.gun:
                 //weaponManager.Attack(WeaponType.gun);
+                animPlayer1.SetBool("isRightRun", false);
+                animPlayer1.SetBool("isLeftRun", false);
                 animPlayer1.SetTrigger("AttackTrigger");
                 break;
         }

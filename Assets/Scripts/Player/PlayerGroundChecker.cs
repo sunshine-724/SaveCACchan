@@ -9,7 +9,7 @@ public interface IGroundObserver
 
 public class PlayerGroundChecker : MonoBehaviour
 {
-    private bool isGrounded;
+    public bool isGrounded { get; private set; }
     private List<IGroundObserver> observers = new List<IGroundObserver>();
     BoxCollider2D coll;
 
@@ -25,7 +25,7 @@ public class PlayerGroundChecker : MonoBehaviour
         //coll.enabled = false;
 
         Vector3 tmp = transform.position;
-        tmp.y -= 4.0f; //自分自身を判定しないように補正を加える
+        tmp.y -= 3.0f; //自分自身を判定しないように補正を加える
 
         //3つのrayで接地判定する
         Vector3 raypos = tmp;
@@ -36,14 +36,13 @@ public class PlayerGroundChecker : MonoBehaviour
         rayposRight.x += 1.0f;
 
 
-        RaycastHit2D hit = Physics2D.Raycast(raypos, Vector2.down, 3.0f);
-        RaycastHit2D hitLeft = Physics2D.Raycast(rayposLeft, Vector2.down,3.0f);
-        RaycastHit2D hitRight = Physics2D.Raycast(rayposRight, Vector2.down, 3.0f);
+        RaycastHit2D hit = Physics2D.Raycast(raypos, Vector2.down, 1.0f);
+        RaycastHit2D hitLeft = Physics2D.Raycast(rayposLeft, Vector2.down,1.0f);
+        RaycastHit2D hitRight = Physics2D.Raycast(rayposRight, Vector2.down, 1.0f);
 
 
         if(hit.collider != null)
         {
-            Debug.Log(hit.collider);
             if (Collision(hit.collider))
             {
                 isGrounded = true;
@@ -79,6 +78,10 @@ public class PlayerGroundChecker : MonoBehaviour
             {
                 isGrounded = false;
             }
+        }
+
+        if((hit.collider == null) && (hitLeft.collider == null) && (hitRight.collider == null)){
+            isGrounded = false;
         }
 
         //coll.enabled = true;
