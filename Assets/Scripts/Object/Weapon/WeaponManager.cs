@@ -7,7 +7,9 @@ public class WeaponManager : MonoBehaviour
 {
     [SerializeField] UIManager uiManager;
 
-    [SerializeField] List<GameObject> prefabWeaponObject; //プレハブの武器オブジェクトリスト(アクティブ状態の武器だけ使用可能)
+    [SerializeField] List<Weapon> prefabWeaponObject; //プレハブの武器オブジェクトリスト(アクティブ状態の武器だけ使用可能)
+
+    [SerializeField] float initialXPositionError = 2.0f; //攻撃オブジェクトの初期値をプレイヤーの中心座標からどれくらい離せるか
 
     // Update is called once per frame
     void Update()
@@ -24,30 +26,47 @@ public class WeaponManager : MonoBehaviour
         uiManager.ChangeDisplayWeapon(weaponType);
     }
 
-    //指定された武器以外全て非アクティブにする
+    //指定された武器以外全て非アクティブにする(UI)
     private void DoActive(WeaponType weaponType)
     {
-        foreach (GameObject obj in prefabWeaponObject)
-        {
-            Weapon weapon = obj.GetComponent<Weapon>();
-            if (weapon != null && weapon.type == weaponType)
-            {
-                obj.SetActive(true);
-                continue;
-            }
-            obj.SetActive(false);
-        }
+        //foreach (Weapon weaponObj in prefabWeaponObject)
+        //{
+        //    GameObject obj = weaponObj.gameObject;
+        //    if (weaponObj != null && weaponObj.type == weaponType)
+        //    {
+        //        obj.SetActive(true);
+        //        continue;
+        //    }
+
+        //    obj.SetActive(false);
+        //}
     }
 
-    public void Attack(WeaponType type)
+    public void Attack(WeaponType type,Vector3 playerPos,Direction direction)
     {
-
-        foreach (GameObject obj in prefabWeaponObject)
+        foreach (Weapon weaponObj in prefabWeaponObject)
         {
-            Weapon weapon = obj.GetComponent<Weapon>();
-            if (weapon != null && weapon.type == type)
+            if (weaponObj != null && weaponObj.type == type)
             {
-                weapon.AttackGun();
+                switch (type)
+                {
+                    case WeaponType.bubble:
+                        if(direction == Direction.left)
+                        {
+                            playerPos.x -= initialXPositionError;
+                        }
+                        else
+                        {
+                            playerPos.x += initialXPositionError;
+                        }
+                        GameObject gameObj = Instantiate(weaponObj.gameObject,playerPos,Quaternion.Euler(0.0f,0.0f,0.0f));
+                        BubbleObject com = gameObj.GetComponent<BubbleObject>();
+                        if (com != null)
+                        {
+                            com.Init(direction);
+                        }
+                        break;
+                }
                 break;
             }
         }

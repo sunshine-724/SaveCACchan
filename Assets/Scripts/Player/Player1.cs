@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum InputMode
 {
@@ -17,6 +16,12 @@ public enum Direction
     right,
 }
 
+public enum PlayerAction
+{
+    jump,
+    attack,
+}
+
 //CACちゃん本体にアタッチするスクリプト
 public class Player1 : MonoBehaviour
 {
@@ -28,7 +33,7 @@ public class Player1 : MonoBehaviour
     [SerializeField] Player2 player2;
     [SerializeField] PlayerGroundChecker playerGroundChecker;
     [SerializeField] CameraSensor cameraSensor;
-    //[SerializeField] WeaponManager weaponManager;
+    [SerializeField] WeaponManager weaponManager;
     [SerializeField] UIManager uiManager;
 
     //ステータス
@@ -39,7 +44,7 @@ public class Player1 : MonoBehaviour
     [SerializeField] float verticalSpeed;
     [SerializeField] Direction direction = Direction.right; //現在向いている向き
 
-    private bool isPriorityJumpAnimation = false; //ジャンプアニメーションを優先するかどうか
+    private bool isPriorityAnimation = false; //特定のアニメーションを優先するかどうか
     private bool invincible = false; //このキャラが無敵かどうか
     [SerializeField] float invincibleTime = 1.5f; //無敵時間
 
@@ -57,8 +62,8 @@ public class Player1 : MonoBehaviour
 
     private void Awake()
     {
-        ////初期武器を装備する
-        //weaponManager.ChangeWeapon(weaponType);
+        //初期武器を装備する
+        weaponManager.ChangeWeapon(weaponType);
 
         rb = this.GetComponent<Rigidbody2D>();
         playerInput = this.GetComponent<PlayerInput>();
@@ -110,6 +115,11 @@ public class Player1 : MonoBehaviour
         {
             animPlayer1.SetFloat("BlendParam", 1);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     private void OnEnable()
@@ -261,27 +271,42 @@ public class Player1 : MonoBehaviour
         Vector2 v = new Vector2(0, value*verticalSpeed);
         if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
         {
-            isPriorityJumpAnimation = true;
+            isPriorityAnimation = true;
             animPlayer1.SetBool("isRightRun", false);
             animPlayer1.SetBool("isLeftRun", false);
         }
 
         animPlayer1.SetTrigger("JumpTrigger"); //ジャンプアニメーション起動
         rb.AddForce(v,ForceMode2D.Impulse);
-        StartCoroutine(WaitJumped());
+        StartCoroutine(WaitAnimation(PlayerAction.jump));
         Debug.Log("ジャンプしています");
     }
 
-    private IEnumerator WaitJumped()
-    {
-        while (!isJumpedAnimation())
+    private IEnumerator WaitAnimation(PlayerAction playerAction) {
+
+        switch (playerAction)
         {
-            yield return null;
+            case PlayerAction.jump:
+                while (!isJumpedAnimation())
+                {
+                    yield return null;
+                }
+                break;
+
+            case PlayerAction.attack:
+                while (!isAttackedAnimation())
+                {
+                    yield return null;
+                }
+                break;
+
+            default:
+                break;
         }
 
-        if (isPriorityJumpAnimation)
+        if (isPriorityAnimation)
         {
-            isPriorityJumpAnimation = false;
+            isPriorityAnimation = false;
 
             if (direction == Direction.right)
             {
@@ -296,9 +321,21 @@ public class Player1 : MonoBehaviour
 
     private bool isJumpedAnimation()
     {
-        // アニメーションの進行状態を確認
+        // ジャンプアニメーションの進行状態を確認
         AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Jump"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool isAttackedAnimation()
+    {
+        // アタックアニメーションの進行状態を確認
+        AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Attack"))
         {
             return true;
         }
@@ -361,11 +398,17 @@ public class Player1 : MonoBehaviour
     {
         switch (weaponType)
         {
-            case WeaponType.gun:
-                //weaponManager.Attack(WeaponType.gun);
-                animPlayer1.SetBool("isRightRun", false);
-                animPlayer1.SetBool("isLeftRun", false);
-                animPlayer1.SetTrigger("AttackTrigger");
+            case WeaponType.bubble:
+                if (animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+                {
+                    isPriorityAnimation = true;
+                    animPlayer1.SetBool("isRightRun", false);
+                    animPlayer1.SetBool("isLeftRun", false);
+                }
+
+                animPlayer1.SetTrigger("AttackTrigger"); //アタックアニメーション起動
+                StartCoroutine(WaitAnimation(PlayerAction.attack));
+                weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction);
                 break;
         }
     }

@@ -21,6 +21,8 @@ public class Footing : MonoBehaviour
 
     private bool canChangeLeftLength;
     private bool canChangeRightLength;
+    [SerializeField] float minExtendLength = 0.2f;
+    [SerializeField] float maxExtendLength = 20.0f;
 
     [SerializeField]
     [Range(0, 1)]
@@ -97,7 +99,7 @@ public class Footing : MonoBehaviour
                 float magnification = (mouseDelta.x + (this.transform.localScale.x)) / (this.transform.localScale.x); //倍率
                 Debug.Log(magnification * this.transform.localScale.x);
                 //magnification *= correction;
-                if(0.2f < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < 6.0f)
+                if(minExtendLength < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < maxExtendLength)
                 {
                     this.transform.position = newCenterPoint;
                     this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
@@ -130,7 +132,7 @@ public class Footing : MonoBehaviour
                 //    this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
                 //}
 
-                if(0.2f < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < 6.0f)
+                if(minExtendLength < magnification*this.transform.localScale.x && magnification*this.transform.localScale.x < maxExtendLength)
                 {
                     this.transform.position = newCenterPoint;
                     this.transform.localScale = new Vector3(magnification * this.transform.localScale.x, this.transform.localScale.y, this.transform.localScale.z);
