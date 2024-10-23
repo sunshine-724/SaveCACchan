@@ -5,6 +5,7 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Unity.Burst.Intrinsics.X86.Avx;
 using static UnityEngine.UI.Image;
 
 
@@ -22,7 +23,7 @@ public class Footing : MonoBehaviour
     private bool canChangeLeftLength;
     private bool canChangeRightLength;
     [SerializeField] float minExtendLength = 0.2f;
-    [SerializeField] float maxExtendLength = 20.0f;
+    [SerializeField] float maxExtendLength = 10.0f;
 
     [SerializeField]
     [Range(0, 1)]
@@ -58,28 +59,28 @@ public class Footing : MonoBehaviour
         }
     }
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //    currentPoint = this.transform.position;
-
-    //    //必要に応じて足場を伸ばす
-    //    StreachFooting();
-
-    //    //足場を移動する
-    //    OnMove();
-    //}
-
-    private void FixedUpdate()
+    // Update is called once per frame
+    void Update()
     {
-            currentPoint = this.transform.position;
+        currentPoint = this.transform.position;
 
-            //必要に応じて足場を伸ばす
-            StreachFooting();
+        //必要に応じて足場を伸ばす
+        StreachFooting();
 
-            //足場を移動する
-            OnMove();
+        //足場を移動する
+        OnMove();
     }
+
+    //private void FixedUpdate()
+    //{
+    //        currentPoint = this.transform.position;
+
+    //        //必要に応じて足場を伸ばす
+    //        StreachFooting();
+
+    //        //足場を移動する
+    //        OnMove();
+    //}
 
     //必要に応じて足場を伸ばす
     private void StreachFooting()
@@ -159,37 +160,81 @@ public class Footing : MonoBehaviour
 
     private void MoveUp()
     {
-        Vector3 tmp = currentPoint;
-        tmp.y += speed;
-        transform.position = tmp;
+        //Vector3 tmp = currentPoint;
+        //tmp.y += speed;
+        //transform.position = tmp;
 
-        tmp.y += 0.6f; //自分自身を参照しないよう補正をかける
+        //tmp.y += 0.6f; //自分自身を参照しないよう補正をかける
 
-        RaycastHit2D hit = Physics2D.Raycast(tmp, Vector2.up, 0.01f);
+        //RaycastHit2D hit = Physics2D.Raycast(tmp, Vector2.up, 0.01f);
 
-        if (currentPoint.y >= maxYPoint)
+        //if (currentPoint.y >= maxYPoint)
+        //{
+        //    state = 2;
+        //}
+
+        //if (hit.collider != null)
+        //{
+        //    if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Obstacles"))
+        //    {
+        //        state = 2;
+        //    }
+        //}
+
+        Vector2 targetPoint = currentPoint;
+        targetPoint.y += speed;
+        float currentVelocity = ((targetPoint - currentPoint) / Time.deltaTime).magnitude;
+
+        targetPoint.y = Mathf.SmoothDamp(currentPoint.y, targetPoint.y, ref currentVelocity, currentVelocity);
+        this.transform.position = targetPoint;
+
+        RaycastHit2D hit = Physics2D.Raycast(targetPoint, Vector2.down, 0.01f);
+
+        if (currentPoint.y <= minYPoint)
         {
-            state = 2;
+            state = 1;
         }
 
         if (hit.collider != null)
         {
             if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Obstacles"))
             {
-                state = 2;
+                state = 1;
             }
         }
     }
 
     private void MoveDown()
     {
-        Vector3 tmp = currentPoint;
-        tmp.y -= speed;
-        transform.position = tmp;
+        //Vector3 tmp = currentPoint;
+        //tmp.y -= speed;
+        //transform.position = tmp;
 
-        tmp.y -= 0.6f; //自分自身を参照しないよう補正をかける
+        //tmp.y -= 0.6f; //自分自身を参照しないよう補正をかける
 
-        RaycastHit2D hit = Physics2D.Raycast(tmp, Vector2.down,0.01f);
+        //RaycastHit2D hit = Physics2D.Raycast(tmp, Vector2.down, 0.01f);
+
+        //if (currentPoint.y <= minYPoint)
+        //{
+        //    state = 1;
+        //}
+
+        //if (hit.collider != null)
+        //{
+        //    if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Obstacles"))
+        //    {
+        //        state = 1;
+        //    }
+        //}
+
+        Vector2 targetPoint = currentPoint;
+        targetPoint.y -= speed;
+        float currentVelocity = ((targetPoint - currentPoint) / Time.deltaTime).magnitude;
+
+        targetPoint.y = Mathf.SmoothDamp(currentPoint.y, targetPoint.y, ref currentVelocity,currentVelocity);
+        this.transform.position = targetPoint;
+
+        RaycastHit2D hit = Physics2D.Raycast(targetPoint, Vector2.down, 0.01f);
 
         if (currentPoint.y <= minYPoint)
         {
