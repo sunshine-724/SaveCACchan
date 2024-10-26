@@ -61,6 +61,9 @@ public class Player1 : MonoBehaviour
     [SerializeField] Animator animPlayer1; //プレイヤー1のアニメーター
     private Animator animator; //武器のアニメーター
 
+    //プレイヤー1に関するSE
+    [SerializeField] PlayerSoundSource playerSoundSource;
+
     //Inputの種類
     [SerializeField] InputMode inputMode = InputMode.keyboardAndGamePad;
 
@@ -319,8 +322,9 @@ public class Player1 : MonoBehaviour
         }
 
         animPlayer1.SetTrigger("JumpTrigger"); //ジャンプアニメーション起動
+        playerSoundSource.PlaySound(SEType.Jump); //ジャンプSEを起動
         rb.AddForce(v,ForceMode2D.Impulse);
-        StartCoroutine(WaitAnimation(PlayerAction.jump));
+        StartCoroutine(WaitAnimation(PlayerAction.jump)); //ジャンプしている間は走るアニメーションをオフにし、ジャンプし終わったらアニメーションを再びおん
         Debug.Log("ジャンプしています");
     }
 
@@ -404,6 +408,8 @@ public class Player1 : MonoBehaviour
     //    Debug.Log("rotationしました");
     //}
 
+
+
     //HPを減らす
     public void DecreaseHP()
     {
@@ -416,8 +422,9 @@ public class Player1 : MonoBehaviour
                 Vector3 tmp = new Vector3(0.0f, rb.velocity.y, 0);
                 rb.velocity = tmp;
             }
-           
+            
             HP--;
+            playerSoundSource.PlaySound(SEType.Damaged); //ダメージSEを起動
             uiManager.DecreaseDisplayHealth();
             StartCoroutine(AffectInvincible()); //一定時間無敵を付与する
         }
@@ -463,11 +470,10 @@ public class Player1 : MonoBehaviour
                 }
 
                 animPlayer1.SetTrigger("AttackTrigger"); //アタックアニメーション起動
+                playerSoundSource.PlaySound(SEType.Attack); //アタックSE起動
                 StartCoroutine(WaitAnimation(PlayerAction.attack));
                 weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction);
                 break;
         }
     }
-
-
 }

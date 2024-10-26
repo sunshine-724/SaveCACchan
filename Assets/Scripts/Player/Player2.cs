@@ -22,6 +22,9 @@ public class Player2 : MonoBehaviour
     private GameObject obj;
     bool isClicked; //クリックしたかどうか
 
+    //プレイヤー2に関するSE
+    [SerializeField] PlayerSoundSource playerSoundSource;
+
     private void Awake()
     {
         playerInput = this.GetComponent<PlayerInput>();
@@ -73,7 +76,12 @@ public class Player2 : MonoBehaviour
     //足場を置く
     void PutFooting(InputAction.CallbackContext ctx)
     {
-        footingManager.PutFooting(cursorController.point,footingType);
+        bool isInstalled;
+        isInstalled = footingManager.PutFooting(cursorController.point,footingType);
+        if (isInstalled)
+        {
+            playerSoundSource.PlaySound(SEType.Asiba_put);
+        }
     }
 
     //足場を伸ばす(クリックしている時)

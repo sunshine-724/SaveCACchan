@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,7 +18,10 @@ public class Footing : MonoBehaviour
     private float maxYPoint; //動く足場の上限
     private float minYPoint; //動く足場の下限
     private int state; //今この足場がどのような状態か 0:stop,1,up,2:down
+
     [SerializeField] float speed = 0.05f; //動く足場のスピード
+    private Vector2 currentVelocity = Vector2.zero; //現在のスピード
+    private Vector2 targetPoint = Vector2.zero; //床が向かう目標値
 
 
     private bool canChangeLeftLength;
@@ -149,10 +153,14 @@ public class Footing : MonoBehaviour
             case 0:
                 break;
             case 1:
+                currentVelocity = Vector2.zero;
+                targetPoint = new Vector2(this.transform.position.x, maxYPoint);
                 MoveUp();
                 break;
 
-            case 2:
+            case 2: 
+                currentVelocity = Vector2.zero;
+                targetPoint = new Vector2(this.transform.position.x, minYPoint);
                 MoveDown();
                 break;
         }
@@ -181,25 +189,22 @@ public class Footing : MonoBehaviour
         //    }
         //}
 
-        Vector2 targetPoint = currentPoint;
-        targetPoint.y += speed;
-        float currentVelocity = ((targetPoint - currentPoint) / Time.deltaTime).magnitude;
+        //transform.position = Vector2.SmoothDamp(this.transform.position, targetPoint, ref currentVelocity, 1.0f*Time.deltaTime);
+        transform.position = Vector2.MoveTowards(currentPoint, targetPoint, 1.0f * Time.deltaTime);
 
-        targetPoint.y = Mathf.SmoothDamp(currentPoint.y, targetPoint.y, ref currentVelocity, currentVelocity);
-        this.transform.position = targetPoint;
 
         RaycastHit2D hit = Physics2D.Raycast(targetPoint, Vector2.down, 0.01f);
 
-        if (currentPoint.y <= minYPoint)
+        if (currentPoint.y >= maxYPoint)
         {
-            state = 1;
+            state = 2;
         }
 
         if (hit.collider != null)
         {
             if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("Obstacles"))
             {
-                state = 1;
+                state = 2;
             }
         }
     }
@@ -227,12 +232,12 @@ public class Footing : MonoBehaviour
         //    }
         //}
 
-        Vector2 targetPoint = currentPoint;
-        targetPoint.y -= speed;
-        float currentVelocity = ((targetPoint - currentPoint) / Time.deltaTime).magnitude;
-
-        targetPoint.y = Mathf.SmoothDamp(currentPoint.y, targetPoint.y, ref currentVelocity,currentVelocity);
-        this.transform.position = targetPoint;
+        //Vector2 targetPoint = currentPoint;
+        //targetPoint.y -= speed;
+        //float currentVelocity = Mathf.Abs(((targetPoint - currentPoint) / Time.deltaTime).magnitude);
+        //currentVelocity *= -1;
+        Vector2 currentVelocity = new Vector2(0.0f, 0.0f);
+        transform.position = Vector2.MoveTowards(currentPoint, targetPoint,1.0f * Time.deltaTime);
 
         RaycastHit2D hit = Physics2D.Raycast(targetPoint, Vector2.down, 0.01f);
 
