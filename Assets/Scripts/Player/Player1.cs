@@ -22,6 +22,14 @@ public enum PlayerAction
     attack,
 }
 
+public enum PlayerState
+{
+    LeftIdle,
+    LeftRun,
+    RightIdle,
+    RightRun,
+}
+
 //CACちゃん本体にアタッチするスクリプト
 public class Player1 : MonoBehaviour
 {
@@ -43,6 +51,7 @@ public class Player1 : MonoBehaviour
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
     [SerializeField] Direction direction = Direction.right; //現在向いている向き
+    private PlayerState PlayerState = PlayerState.RightIdle; //プレイヤーの状態
 
     private bool isPriorityAnimation = false; //特定のアニメーションを優先するかどうか
     private bool invincible = false; //このキャラが無敵かどうか
@@ -107,14 +116,24 @@ public class Player1 : MonoBehaviour
             }
         }
 
-        if (direction == Direction.left)
-        {
-            animPlayer1.SetFloat("BlendParam", 0);
-        }
-        else
-        {
-            animPlayer1.SetFloat("BlendParam", 1);
-        }
+        //if (direction == Direction.left)
+        //{
+        //    animPlayer1.SetFloat("BlendParam", 0);
+        //}
+        //else
+        //{
+        //    animPlayer1.SetFloat("BlendParam", 1);
+        //}
+
+        
+        //if (direction == Direction.left)
+        //{
+        //    animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
+        //}
+        //else if(direction == Direction.right)
+        //{
+        //    animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightIdle);
+        //}
     }
 
     private void FixedUpdate()
@@ -195,8 +214,11 @@ public class Player1 : MonoBehaviour
         if (value.x >= 0.2f)
         {
             value = Right(value);
-            animPlayer1.SetBool("isLeftRun", false);
-            animPlayer1.SetBool("isRightRun", true);
+
+            //animPlayer1.SetBool("isLeftRun", false);
+            //animPlayer1.SetBool("isRightRun", true);
+            animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightRun);
+
             animPlayer1.SetBool("isRight", true);
             animPlayer1.SetBool("isLeft", false);
 
@@ -205,8 +227,10 @@ public class Player1 : MonoBehaviour
         else if (value.x <= -0.2f)
         {
             value = Left(value);
-            animPlayer1.SetBool("isRightRun", false);
-            animPlayer1.SetBool("isLeftRun", true);
+            //animPlayer1.SetBool("isRightRun", false);
+            //animPlayer1.SetBool("isLeftRun", true);
+            animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftRun);
+
             animPlayer1.SetBool("isRight", false);
             animPlayer1.SetBool("isLeft", true);
             direction = Direction.left;
@@ -215,8 +239,18 @@ public class Player1 : MonoBehaviour
         {
             Debug.Log("止まりました");
             this.rb.velocity = new Vector2(0.0f, 0.0f); //停止
-            animPlayer1.SetBool("isLeftRun", false);
-            animPlayer1.SetBool("isRightRun", false);
+
+            //animPlayer1.SetBool("isLeftRun", false);
+            //animPlayer1.SetBool("isRightRun", false);
+
+            if(direction == Direction.right)
+            {
+                animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightIdle);
+            }
+            else if(direction == Direction.left)
+            {
+                animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
+            }
             cameraSensor.StopPlayer();
             return;
         }
@@ -269,11 +303,19 @@ public class Player1 : MonoBehaviour
         }
         float value = ctx.ReadValue<float>();
         Vector2 v = new Vector2(0, value*verticalSpeed);
-        if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+
+
+
+        //if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+        //{
+        //    isPriorityAnimation = true;
+        //    animPlayer1.SetBool("isRightRun", false);
+        //    animPlayer1.SetBool("isLeftRun", false);
+        //}
+
+        if(((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun) || ((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun))
         {
             isPriorityAnimation = true;
-            animPlayer1.SetBool("isRightRun", false);
-            animPlayer1.SetBool("isLeftRun", false);
         }
 
         animPlayer1.SetTrigger("JumpTrigger"); //ジャンプアニメーション起動
@@ -310,11 +352,13 @@ public class Player1 : MonoBehaviour
 
             if (direction == Direction.right)
             {
-                animPlayer1.SetBool("isRightRun", true);
+                animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightRun);
+                //animPlayer1.SetBool("isRightRun", true);
             }
             else
             {
-                animPlayer1.SetBool("isLeftRun", true);
+                animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftRun);
+                //animPlayer1.SetBool("isLeftRun", true);
             }
         }
     }
@@ -399,11 +443,23 @@ public class Player1 : MonoBehaviour
         switch (weaponType)
         {
             case WeaponType.bubble:
-                if (animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+                if(((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun) || ((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun))
                 {
                     isPriorityAnimation = true;
-                    animPlayer1.SetBool("isRightRun", false);
-                    animPlayer1.SetBool("isLeftRun", false);
+                }
+                //if (animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
+                //{
+                //    isPriorityAnimation = true;
+                //    animPlayer1.SetBool("isRightRun", false);
+                //    animPlayer1.SetBool("isLeftRun", false);
+                //}
+
+                if(direction == Direction.left)
+                {
+                    animPlayer1.SetFloat("AttackBlendParam", 0.0f);
+                }else if(direction == Direction.right)
+                {
+                    animPlayer1.SetFloat("AttackBlendParam", 1.0f);
                 }
 
                 animPlayer1.SetTrigger("AttackTrigger"); //アタックアニメーション起動
@@ -412,4 +468,6 @@ public class Player1 : MonoBehaviour
                 break;
         }
     }
+
+
 }
