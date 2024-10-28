@@ -11,7 +11,7 @@ public class GroundObserver : MonoBehaviour, IGroundObserver
         PlayerGroundChecker groundChecker = FindObjectOfType<PlayerGroundChecker>();
         if (groundChecker != null)
         {
-            groundChecker.AddObserver(this);
+            //groundChecker.AddObserver(this);
         }
     }
 

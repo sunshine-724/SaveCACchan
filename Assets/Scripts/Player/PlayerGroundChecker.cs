@@ -11,8 +11,8 @@ public class PlayerGroundChecker : MonoBehaviour
 {
     public bool isGrounded { get; private set; }
     private List<IGroundObserver> observers = new List<IGroundObserver>();
+    public GameObject lastGround { get; private set; }
     BoxCollider2D coll;
-
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class PlayerGroundChecker : MonoBehaviour
         //coll.enabled = false;
 
         Vector3 tmp = transform.position;
-        tmp.y -= 3.0f; //自分自身を判定しないように補正を加える
+        tmp.y -= 4.0f; //自分自身を判定しないように補正を加える
 
         //3つのrayで接地判定する
         Vector3 raypos = tmp;
@@ -36,15 +36,17 @@ public class PlayerGroundChecker : MonoBehaviour
         rayposRight.x += 1.0f;
 
 
-        RaycastHit2D hit = Physics2D.Raycast(raypos, Vector2.down, 1.0f);
-        RaycastHit2D hitLeft = Physics2D.Raycast(rayposLeft, Vector2.down,1.0f);
-        RaycastHit2D hitRight = Physics2D.Raycast(rayposRight, Vector2.down, 1.0f);
+        RaycastHit2D hit = Physics2D.Raycast(raypos, Vector2.down, 2.0f);
+        RaycastHit2D hitLeft = Physics2D.Raycast(rayposLeft, Vector2.down,2.0f);
+        RaycastHit2D hitRight = Physics2D.Raycast(rayposRight, Vector2.down, 2.0f);
+
 
 
         if(hit.collider != null)
         {
             if (Collision(hit.collider))
             {
+                Debug.Log(hit.collider.gameObject);
                 isGrounded = true;
                 return;
             }
@@ -92,6 +94,7 @@ public class PlayerGroundChecker : MonoBehaviour
         if (collider.CompareTag("Ground") || collider.CompareTag("Obstacles"))
         {
             Debug.Log("true");
+            lastGround = collider.gameObject; //最後に接地したゲームオブジェクトを保存
             return true;
         }
         else
@@ -101,23 +104,23 @@ public class PlayerGroundChecker : MonoBehaviour
         }
     }
 
-    public void AddObserver(IGroundObserver observer)
-    {
-        observers.Add(observer);
-    }
+    //public void AddObserver(IGroundObserver observer)
+    //{
+    //    observers.Add(observer);
+    //}
 
-    public void RemoveObserver(IGroundObserver observer)
-    {
-        observers.Remove(observer);
-    }
+    //public void RemoveObserver(IGroundObserver observer)
+    //{
+    //    observers.Remove(observer);
+    //}
 
-    void NotifyObservers()
-    {
-        foreach (var observer in observers)
-        {
-            observer.OnGroundStateChanged(isGrounded);
-        }
-    }
+    //void NotifyObservers()
+    //{
+    //    foreach (var observer in observers)
+    //    {
+    //        observer.OnGroundStateChanged(isGrounded);
+    //    }
+    //}
 
     public bool CanJump()
     {

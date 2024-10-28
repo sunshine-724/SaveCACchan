@@ -70,7 +70,8 @@ public class Player1 : MonoBehaviour
     //デバッグモード(InputMode.keyboard)のみ
     float lastInputTime;
     [SerializeField] float timeoutDuration = 0.3f; // 何秒間の無入力状態を許容するか
-
+    private InputAction HoldDKeyAction;
+    private InputAction HoldAKeyAction;
 
     private void Awake()
     {
@@ -84,6 +85,14 @@ public class Player1 : MonoBehaviour
         if(playerInput == null)
         {
             Debug.Log("キー入力が登録されていません");
+        }
+        else
+        {
+            if(inputMode == InputMode.keyboard)
+            {
+                HoldDKeyAction = playerInput.actions["OnRightMove"];
+                HoldAKeyAction = playerInput.actions["OnLeftMove"];
+            }
         }
     }
 
@@ -111,11 +120,29 @@ public class Player1 : MonoBehaviour
 
         if(inputMode == InputMode.keyboard)
         {
-            //もし一定時間入力がなければ止まる(debugモードのみ)
-            if (Time.time - lastInputTime > timeoutDuration)
+            // ReadValue<float>()でキーの値を取得（押されている間は1、離されたら0）
+            float DkeyHeld = HoldDKeyAction.ReadValue<float>();
+            float AkeyHeld = HoldAKeyAction.ReadValue<float>();
+
+            if (DkeyHeld == 1f)
             {
-                Vector2 stopVector2 = new Vector2(0.0f, 0.0f);
-                Move(stopVector2);
+                Debug.Log("Dキーが押され続けています。");
+                Vector2 value = new Vector2(DkeyHeld, 0.0f);
+                Move(value);
+            }else if(AkeyHeld == 1f)
+            {
+                Debug.Log("Aキーが押され続けています。");
+                Vector2 value = new Vector2(-1 * AkeyHeld, 0.0f);
+                Move(value);
+            }else
+            {
+                Debug.Log("キーが離されています。");
+                //もし一定時間入力がなければ止まる(debugモードのみ)
+                if (Time.time - lastInputTime > timeoutDuration)
+                {
+                    Vector2 stopVector2 = new Vector2(0.0f, rb.velocity.y);
+                    Move(stopVector2);
+                }
             }
         }
 
@@ -158,8 +185,10 @@ public class Player1 : MonoBehaviour
         else if(inputMode == InputMode.keyboard)
         {
             playerInput.actions["OnRightMove"].performed += OnRightMove;
+            playerInput.actions["OnRightMove"].canceled += OnRightMove;
             playerInput.actions["OnLeftMove"].performed += OnLeftMove;
-            playerInput.actions["OnJump"].performed += OnJump;
+            playerInput.actions["OnLeftMove"].canceled += OnLeftMove;
+            playerInput.actions["OnJump"].started += OnJump;
             playerInput.actions["Attack"].performed += Attack;
 
             playerInput.onActionTriggered += OnActionTriggered; //任意のアクション時起動
@@ -179,8 +208,10 @@ public class Player1 : MonoBehaviour
         }else if(inputMode == InputMode.keyboard)
         {
             playerInput.actions["OnRightMove"].performed -= OnRightMove;
+            playerInput.actions["OnRightMove"].canceled -= OnRightMove;
             playerInput.actions["OnLeftMove"].performed -= OnLeftMove;
-            playerInput.actions["OnJump"].performed -= OnJump;
+            playerInput.actions["OnLeftMove"].canceled -= OnLeftMove;
+            playerInput.actions["OnJump"].started -= OnJump;
             playerInput.actions["Attack"].performed -= Attack;
 
             playerInput.onActionTriggered -= OnActionTriggered;
@@ -201,14 +232,18 @@ public class Player1 : MonoBehaviour
 
     private void OnRightMove(InputAction.CallbackContext ctx)
     {
-        Vector2 value = new Vector2(1.0f, 0.0f);
-        Move(value);
+        //float f_value = ctx.ReadValue<float>();
+        //Vector2 value = new Vector2(f_value, 0.0f);
+
+        //Debug.Log(value);
+        //Move(value);
     }
 
     private void OnLeftMove(InputAction.CallbackContext ctx)
     {
-        Vector2 value = new Vector2(-1.0f, 0.0f);
-        Move(value);
+        //float f_value = ctx.ReadValue<float>();
+        //Vector2 value = new Vector2(-1 * f_value, 0.0f);
+        //Move(value);
     }
 
     private void Move(Vector2 value)
@@ -306,8 +341,6 @@ public class Player1 : MonoBehaviour
         }
         float value = ctx.ReadValue<float>();
         Vector2 v = new Vector2(0, value*verticalSpeed);
-
-
 
         //if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
         //{
