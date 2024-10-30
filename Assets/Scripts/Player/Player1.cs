@@ -51,7 +51,7 @@ public class Player1 : MonoBehaviour
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
     [SerializeField] Direction direction = Direction.right; //現在向いている向き
-    private PlayerState PlayerState = PlayerState.RightIdle; //プレイヤーの状態
+    private PlayerState playerState = PlayerState.RightIdle; //プレイヤーの状態
 
     private bool isPriorityAnimation = false; //特定のアニメーションを優先するかどうか
     private bool invincible = false; //このキャラが無敵かどうか
@@ -66,6 +66,8 @@ public class Player1 : MonoBehaviour
 
     //Inputの種類
     [SerializeField] InputMode inputMode = InputMode.keyboardAndGamePad;
+    Vector2 moveInput; //スティックの入力量
+
 
     //デバッグモード(InputMode.keyboard)のみ
     float lastInputTime;
@@ -115,6 +117,7 @@ public class Player1 : MonoBehaviour
 
     private void Update()
     {
+        moveInput = playerInput.actions["OnMove"].ReadValue<Vector2>();
         point = rb.transform.position;
         player2.chaseCAC(this.transform.position);
 
@@ -146,6 +149,30 @@ public class Player1 : MonoBehaviour
             }
         }
 
+        if(Mathf.Abs(rb.velocity.x) > horizonSpeed)
+        {
+            if(direction == Direction.left)
+            {
+                rb.velocity = new Vector2(-1 * horizonSpeed, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(horizonSpeed, rb.velocity.y);
+            }
+        }
+
+        if(playerGroundChecker.isGrounded && Mathf.Abs(moveInput.x) < 0.2f)
+        {
+            rb.velocity = new Vector2(0.0f, rb.velocity.y);
+        }
+
+        //if((playerState == PlayerState.LeftIdle) || (playerState == PlayerState.RightIdle)){
+        //    if (playerGroundChecker.isGrounded)
+        //    {
+        //        this.rb.velocity = Vector2.zero;
+        //    }
+        //}
+
         //if (direction == Direction.left)
         //{
         //    animPlayer1.SetFloat("BlendParam", 0);
@@ -155,7 +182,7 @@ public class Player1 : MonoBehaviour
         //    animPlayer1.SetFloat("BlendParam", 1);
         //}
 
-        
+
         //if (direction == Direction.left)
         //{
         //    animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
@@ -255,6 +282,7 @@ public class Player1 : MonoBehaviour
 
             //animPlayer1.SetBool("isLeftRun", false);
             //animPlayer1.SetBool("isRightRun", true);
+            playerState = PlayerState.RightRun;
             animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightRun);
 
             animPlayer1.SetBool("isRight", true);
@@ -267,6 +295,7 @@ public class Player1 : MonoBehaviour
             value = Left(value);
             //animPlayer1.SetBool("isRightRun", false);
             //animPlayer1.SetBool("isLeftRun", true);
+            playerState = PlayerState.LeftRun;
             animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftRun);
 
             animPlayer1.SetBool("isRight", false);
@@ -275,18 +304,28 @@ public class Player1 : MonoBehaviour
         }
         else
         {
-            Debug.Log("止まりました");
-            this.rb.velocity = new Vector2(0.0f,rb.velocity.y); //停止
+            //もし接地していなかったら、停止しない
+            if (!playerGroundChecker.isGrounded)
+            {
+                //this.rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y); //停止しない
+                StartCoroutine(DelayStopPlayer()); //接地した段階で停止する
+            }
+            else
+            {
+                this.rb.velocity = new Vector2(0.0f,rb.velocity.y); //停止
+            }
 
             //animPlayer1.SetBool("isLeftRun", false);
             //animPlayer1.SetBool("isRightRun", false);
 
-            if(direction == Direction.right)
+            if (direction == Direction.right)
             {
+                playerState = PlayerState.RightIdle;
                 animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightIdle);
             }
             else if(direction == Direction.left)
             {
+                playerState = PlayerState.LeftIdle;
                 animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
             }
             cameraSensor.StopPlayer();
@@ -295,6 +334,19 @@ public class Player1 : MonoBehaviour
         value.x = value.x * horizonSpeed;
 
         rb.AddForce(value, ForceMode2D.Impulse); //プレイヤーに力を加え移動させる
+    }
+
+    IEnumerator DelayStopPlayer()
+    {
+        while (!playerGroundChecker.isGrounded)
+        {
+            Debug.Log("空中で停止しました");
+
+            Debug.Log(playerGroundChecker.isGrounded);
+            yield return null;
+        }
+        this.rb.velocity = new Vector2(0.0f,rb.velocity.y);
+        Debug.Log("停止しました");
     }
 
     Vector2 Right(Vector2 value)
@@ -340,7 +392,7 @@ public class Player1 : MonoBehaviour
             return;
         }
         float value = ctx.ReadValue<float>();
-        Vector2 v = new Vector2(0, value*verticalSpeed);
+        Vector2 v = new Vector2(rb.velocity.x, value*verticalSpeed);
 
         //if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
         //{
