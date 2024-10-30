@@ -153,7 +153,7 @@ MonoBehaviour:
   patrol1_coordinatesY: 10
   detect_range: 40
   chase_speed: 500
-  chase_span: 10
+  chase_span: 7.5
   ischased: 0
   playerobj: {fileID: 0}
 --- !u!50 &8477589120336818426

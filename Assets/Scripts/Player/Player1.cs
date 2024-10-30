@@ -276,7 +276,7 @@ public class Player1 : MonoBehaviour
         else
         {
             Debug.Log("止まりました");
-            this.rb.velocity = new Vector2(0.0f, 0.0f); //停止
+            this.rb.velocity = new Vector2(0.0f,rb.velocity.y); //停止
 
             //animPlayer1.SetBool("isLeftRun", false);
             //animPlayer1.SetBool("isRightRun", false);

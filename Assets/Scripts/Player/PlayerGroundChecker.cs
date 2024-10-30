@@ -25,7 +25,7 @@ public class PlayerGroundChecker : MonoBehaviour
         //coll.enabled = false;
 
         Vector3 tmp = transform.position;
-        tmp.y -= 4.0f; //自分自身を判定しないように補正を加える
+        tmp.y -= 3.05f; //自分自身を判定しないように補正を加える
 
         //3つのrayで接地判定する
         Vector3 raypos = tmp;

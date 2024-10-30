@@ -15,6 +15,7 @@ public class PlayerFallChecker : MonoBehaviour
         {
             Debug.Log("落下しました");
             Vector3 targetPosition = playerGroundChecker.lastGround.transform.position;
+            targetPosition.z = 0.0f;
             targetPosition.y += YERROR; //そのままだとゲームオブジェクトに対して埋め込まれるので補正をかける
             this.transform.position = targetPosition;//最後に接地したゲームオブジェクトの中心座標に移動する
         }
@@ -25,7 +26,6 @@ public class PlayerFallChecker : MonoBehaviour
         if (collision.CompareTag("FallSensor"))
         {
             Debug.Log("落下しました");
-            
         }
     }
 
