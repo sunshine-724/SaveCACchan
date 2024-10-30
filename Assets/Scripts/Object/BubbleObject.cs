@@ -46,4 +46,14 @@ public class BubbleObject : MonoBehaviour
         this.direction = playerDirection;
         Debug.Log("directionは" + this.direction + "です");
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            GameObject enemyObj = collision.gameObject;
+            Destroy(enemyObj);
+            Destroy(this.gameObject);
+        }
+    }
 }

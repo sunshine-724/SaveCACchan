@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - Goal
   - Enemy
+  - FallSensor
   layers:
   - Default
   - TransparentFX

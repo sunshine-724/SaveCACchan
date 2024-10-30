@@ -32,7 +32,7 @@ public class FootingManager : MonoBehaviour
     }
 
     //特定の足場を設置する
-    public void PutFooting(Vector2 point,FootingType footingType)
+    public bool PutFooting(Vector2 point,FootingType footingType)
     {
         if (CanPutFooting(point))
         {
@@ -50,6 +50,7 @@ public class FootingManager : MonoBehaviour
                             Footing newCom =  newObj.GetComponent<Footing>();
                             newCom.Init(footingType);
                             footingObjects.Enqueue(newObj); //現在出現している足場キューに登録
+                            return true;
                         }
                         
                         break;
@@ -57,6 +58,8 @@ public class FootingManager : MonoBehaviour
                 }
             }
         }
+
+        return false;
     }
 
     //足場を置けるかどうかを判断する
