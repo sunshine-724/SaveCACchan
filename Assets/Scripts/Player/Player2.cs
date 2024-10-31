@@ -22,6 +22,9 @@ public class Player2 : MonoBehaviour
     private GameObject obj;
     bool isClicked; //クリックしたかどうか
 
+    bool isinstall = true; //足場をおいて良いかどうか
+    [SerializeField] float blankTime = 2.0f;  //足場を連続して置ける時間間隔
+
     //プレイヤー2に関するSE
     [SerializeField] PlayerSoundSource playerSoundSource;
 
@@ -78,12 +81,26 @@ public class Player2 : MonoBehaviour
     //足場を置く
     void PutFooting(InputAction.CallbackContext ctx)
     {
-        bool isInstalled;
+        bool isInstalled; //足場を接地したかどうか
+        if (!isinstall)
+        {
+            return; //指定した時間経過していないので足場をおけない
+        }
+
         isInstalled = footingManager.PutFooting(cursorController.point,footingType);
         if (isInstalled)
         {
             playerSoundSource.PlaySound(SEType.Asiba_put);
+            isinstall = false;
+            StartCoroutine(InstalledFooting());  //一定時間足場をおけないようにする
         }
+    }
+
+    //一定時間足場をおけないようにする
+    IEnumerator InstalledFooting()
+    {
+        yield return new WaitForSeconds(blankTime);
+        isinstall = true;
     }
 
     //足場を伸ばす(クリックしている時)
