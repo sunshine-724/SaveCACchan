@@ -518,8 +518,6 @@ public class Player1 : MonoBehaviour
     //    Debug.Log("rotationしました");
     //}
 
-
-
     //HPを減らす
     public void DecreaseHP()
     {
@@ -555,6 +553,7 @@ public class Player1 : MonoBehaviour
         }
     }
 
+    //無敵付与
     IEnumerator AffectInvincible()
     {
         invincible = true; //一定時間無敵にする
@@ -596,8 +595,14 @@ public class Player1 : MonoBehaviour
                 animPlayer1.SetTrigger("AttackTrigger"); //アタックアニメーション起動
                 playerSoundSource.PlaySound(SEType.Attack); //アタックSE起動
                 StartCoroutine(WaitAnimation(PlayerAction.attack));
-                weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction);
+                weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction,this);
                 break;
         }
+    }
+
+    public void AttackHit()
+    {
+        Debug.Log("受け取った");
+        playerSoundSource.PlaySound(SEType.AttackHit);
     }
 }

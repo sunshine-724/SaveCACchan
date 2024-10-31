@@ -6,6 +6,7 @@ public enum SEType
 {
     Asiba_put,
     Attack,
+    AttackHit,
     Damaged,
     Jump,
 }
@@ -38,6 +39,9 @@ public class PlayerSoundSource : MonoBehaviour
         }else if(clipName == "CAC_Jump")
         {
             audioSourceDictionary.Add(SEType.Jump, audioSource);
+        }else if(clipName == "AttackHit")
+        {
+            audioSourceDictionary.Add(SEType.AttackHit, audioSource);
         }
         else
         {
@@ -64,6 +68,10 @@ public class PlayerSoundSource : MonoBehaviour
 
             case SEType.Jump:
                 playSoundSource = audioSourceDictionary[SEType.Jump];
+                break;
+
+            case SEType.AttackHit:
+                playSoundSource = audioSourceDictionary[SEType.AttackHit];
                 break;
 
             default:
