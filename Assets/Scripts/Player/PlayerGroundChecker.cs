@@ -46,7 +46,6 @@ public class PlayerGroundChecker : MonoBehaviour
         {
             if (Collision(hit.collider))
             {
-                Debug.Log(hit.collider.gameObject);
                 isGrounded = true;
                 return;
             }

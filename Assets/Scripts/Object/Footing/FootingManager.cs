@@ -69,7 +69,7 @@ public class FootingManager : MonoBehaviour
         if (footingObjects.Count < maxFootingNumber)
         {
             //条件2.マウスの場所がサークル内にあるかどうか
-            if (circle.CheckPointinCircle(point))
+            if (circle.IsPointInCircle(point))
             {
                 return true;
             }
@@ -79,7 +79,7 @@ public class FootingManager : MonoBehaviour
         {
             //足場がすでに3つある場合、最初に追加した足場を削除し、新たな足場を追加する
             GameObject obj = footingObjects.Peek();
-            if (circle.CheckPointinCircle(point))
+            if (circle.IsPointInCircle(point))
             {
                 Destroy(obj);
                 footingObjects.Dequeue();
