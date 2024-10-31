@@ -42,7 +42,7 @@ public class WeaponManager : MonoBehaviour
         //}
     }
 
-    public void Attack(WeaponType type,Vector3 playerPos,Direction direction)
+    public void Attack(WeaponType type,Vector3 playerPos,Direction direction,Player1 player1)
     {
         foreach (Weapon weaponObj in prefabWeaponObject)
         {
@@ -63,7 +63,7 @@ public class WeaponManager : MonoBehaviour
                         BubbleObject com = gameObj.GetComponent<BubbleObject>();
                         if (com != null)
                         {
-                            com.Init(direction);
+                            com.Init(direction,player1);
                         }
                         break;
                 }

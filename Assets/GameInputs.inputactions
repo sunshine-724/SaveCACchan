@@ -255,6 +255,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Ending",
+            "id": "aefeb9d4-85a4-4ff1-bfe5-504396bb4199",
+            "actions": [
+                {
+                    "name": "ClickToMoveTitle",
+                    "type": "Button",
+                    "id": "68c78ea9-dd2b-48c5-8b5d-df3f8b585597",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "44dac26e-641f-4e2a-86a5-2b93ec10e47c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClickToMoveTitle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

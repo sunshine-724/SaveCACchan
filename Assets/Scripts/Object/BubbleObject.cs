@@ -11,6 +11,8 @@ public class BubbleObject : MonoBehaviour
 
     [SerializeField] float speed = 0.5f;
 
+    Player1 player1;
+
     private void FixedUpdate()
     {
         if (isMove)
@@ -40,8 +42,9 @@ public class BubbleObject : MonoBehaviour
         }
     }
 
-    public void Init(Direction playerDirection)
+    public void Init(Direction playerDirection,Player1 _player1)
     {
+        player1 = _player1;
         isMove = true;
         this.direction = playerDirection;
         Debug.Log("directionは" + this.direction + "です");
@@ -52,6 +55,7 @@ public class BubbleObject : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             GameObject enemyObj = collision.gameObject;
+            player1.AttackHit(); //コールバックを返す
             Destroy(enemyObj);
             Destroy(this.gameObject);
         }

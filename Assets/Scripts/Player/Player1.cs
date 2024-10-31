@@ -51,7 +51,7 @@ public class Player1 : MonoBehaviour
     [SerializeField] float horizonSpeed;
     [SerializeField] float verticalSpeed;
     [SerializeField] Direction direction = Direction.right; //現在向いている向き
-    private PlayerState PlayerState = PlayerState.RightIdle; //プレイヤーの状態
+    private PlayerState playerState = PlayerState.RightIdle; //プレイヤーの状態
 
     private bool isPriorityAnimation = false; //特定のアニメーションを優先するかどうか
     private bool invincible = false; //このキャラが無敵かどうか
@@ -66,6 +66,10 @@ public class Player1 : MonoBehaviour
 
     //Inputの種類
     [SerializeField] InputMode inputMode = InputMode.keyboardAndGamePad;
+    Vector2 moveInput; //スティックの入力量
+
+    [SerializeField] ChangeScene changeScene;
+
 
     //デバッグモード(InputMode.keyboard)のみ
     float lastInputTime;
@@ -115,6 +119,7 @@ public class Player1 : MonoBehaviour
 
     private void Update()
     {
+        moveInput = playerInput.actions["OnMove"].ReadValue<Vector2>();
         point = rb.transform.position;
         player2.chaseCAC(this.transform.position);
 
@@ -146,6 +151,30 @@ public class Player1 : MonoBehaviour
             }
         }
 
+        if(Mathf.Abs(rb.velocity.x) > horizonSpeed)
+        {
+            if(direction == Direction.left)
+            {
+                rb.velocity = new Vector2(-1 * horizonSpeed, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(horizonSpeed, rb.velocity.y);
+            }
+        }
+
+        if(playerGroundChecker.isGrounded && Mathf.Abs(moveInput.x) < 0.2f)
+        {
+            rb.velocity = new Vector2(0.0f, rb.velocity.y);
+        }
+
+        //if((playerState == PlayerState.LeftIdle) || (playerState == PlayerState.RightIdle)){
+        //    if (playerGroundChecker.isGrounded)
+        //    {
+        //        this.rb.velocity = Vector2.zero;
+        //    }
+        //}
+
         //if (direction == Direction.left)
         //{
         //    animPlayer1.SetFloat("BlendParam", 0);
@@ -155,7 +184,7 @@ public class Player1 : MonoBehaviour
         //    animPlayer1.SetFloat("BlendParam", 1);
         //}
 
-        
+
         //if (direction == Direction.left)
         //{
         //    animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
@@ -255,6 +284,7 @@ public class Player1 : MonoBehaviour
 
             //animPlayer1.SetBool("isLeftRun", false);
             //animPlayer1.SetBool("isRightRun", true);
+            playerState = PlayerState.RightRun;
             animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightRun);
 
             animPlayer1.SetBool("isRight", true);
@@ -267,6 +297,7 @@ public class Player1 : MonoBehaviour
             value = Left(value);
             //animPlayer1.SetBool("isRightRun", false);
             //animPlayer1.SetBool("isLeftRun", true);
+            playerState = PlayerState.LeftRun;
             animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftRun);
 
             animPlayer1.SetBool("isRight", false);
@@ -275,18 +306,28 @@ public class Player1 : MonoBehaviour
         }
         else
         {
-            Debug.Log("止まりました");
-            this.rb.velocity = new Vector2(0.0f, 0.0f); //停止
+            //もし接地していなかったら、停止しない
+            if (!playerGroundChecker.isGrounded)
+            {
+                //this.rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y); //停止しない
+                StartCoroutine(DelayStopPlayer()); //接地した段階で停止する
+            }
+            else
+            {
+                this.rb.velocity = new Vector2(0.0f,rb.velocity.y); //停止
+            }
 
             //animPlayer1.SetBool("isLeftRun", false);
             //animPlayer1.SetBool("isRightRun", false);
 
-            if(direction == Direction.right)
+            if (direction == Direction.right)
             {
+                playerState = PlayerState.RightIdle;
                 animPlayer1.SetFloat("BlendParam", (float)PlayerState.RightIdle);
             }
             else if(direction == Direction.left)
             {
+                playerState = PlayerState.LeftIdle;
                 animPlayer1.SetFloat("BlendParam", (float)PlayerState.LeftIdle);
             }
             cameraSensor.StopPlayer();
@@ -295,6 +336,19 @@ public class Player1 : MonoBehaviour
         value.x = value.x * horizonSpeed;
 
         rb.AddForce(value, ForceMode2D.Impulse); //プレイヤーに力を加え移動させる
+    }
+
+    IEnumerator DelayStopPlayer()
+    {
+        while (!playerGroundChecker.isGrounded)
+        {
+            Debug.Log("空中で停止しました");
+
+            Debug.Log(playerGroundChecker.isGrounded);
+            yield return null;
+        }
+        this.rb.velocity = new Vector2(0.0f,rb.velocity.y);
+        Debug.Log("停止しました");
     }
 
     Vector2 Right(Vector2 value)
@@ -339,8 +393,15 @@ public class Player1 : MonoBehaviour
             Debug.Log("空中にいるためジャンプできませんでした");
             return;
         }
+
+        if (isCurrentTriggerAnimation())
+        {
+            Debug.Log("トリガーアニメーションが実行中です");
+            return;
+        }
+
         float value = ctx.ReadValue<float>();
-        Vector2 v = new Vector2(0, value*verticalSpeed);
+        Vector2 v = new Vector2(rb.velocity.x, value*verticalSpeed);
 
         //if(animPlayer1.GetBool("isRightRun") || animPlayer1.GetBool("isLeftRun"))
         //{
@@ -349,6 +410,7 @@ public class Player1 : MonoBehaviour
         //    animPlayer1.SetBool("isLeftRun", false);
         //}
 
+        //ジャンプをする際に走るモーション中ならモーションを強制終了する権利を得る。
         if(((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun) || ((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun))
         {
             isPriorityAnimation = true;
@@ -361,8 +423,10 @@ public class Player1 : MonoBehaviour
         Debug.Log("ジャンプしています");
     }
 
+    //Idleを強制キャンセルし、トリガーアニメーションを実行。実行後再びIdleを起動
     private IEnumerator WaitAnimation(PlayerAction playerAction) {
 
+        //トリガーアニメーション実行完了まで待機
         switch (playerAction)
         {
             case PlayerAction.jump:
@@ -383,6 +447,7 @@ public class Player1 : MonoBehaviour
                 break;
         }
 
+        //もし走るモーションの強制終了権を持っていたら解除し、終了前のアニメーションを再び表示させる
         if (isPriorityAnimation)
         {
             isPriorityAnimation = false;
@@ -424,6 +489,18 @@ public class Player1 : MonoBehaviour
         return false;
     }
 
+    //もし何かしらのトリガーアニメーション実行中であればtrue,違うければfalse
+    private bool isCurrentTriggerAnimation()
+    {
+        AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("Idle"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     //プレイヤーの向き(左右)を変更する
     //void ChangePlayerRotation(Vector2 value)
     //{
@@ -440,8 +517,6 @@ public class Player1 : MonoBehaviour
     //    rb.transform.localScale = vector3;
     //    Debug.Log("rotationしました");
     //}
-
-
 
     //HPを減らす
     public void DecreaseHP()
@@ -462,13 +537,23 @@ public class Player1 : MonoBehaviour
             StartCoroutine(AffectInvincible()); //一定時間無敵を付与する
         }
 
+        Debug.Log(HP);
         //もしHPが0になったら
         if (HP == 0)
         {
-
+            switch (changeScene.ReadCurrntScene())
+            {
+                case Scenes.MainStage:
+                    changeScene.MoveGameOver_MainStage();
+                    break;
+                case Scenes.TutorialStage:
+                    changeScene.MoveGameOver_Tutorial();
+                    break;
+            }
         }
     }
 
+    //無敵付与
     IEnumerator AffectInvincible()
     {
         invincible = true; //一定時間無敵にする
@@ -480,6 +565,11 @@ public class Player1 : MonoBehaviour
     //受け取った武器に応じて攻撃する
     public void Attack(InputAction.CallbackContext ctx)
     {
+        if (isCurrentTriggerAnimation())
+        {
+            Debug.Log("トリガーアニメーションが実行中です");
+            return;
+        }
         switch (weaponType)
         {
             case WeaponType.bubble:
@@ -505,8 +595,14 @@ public class Player1 : MonoBehaviour
                 animPlayer1.SetTrigger("AttackTrigger"); //アタックアニメーション起動
                 playerSoundSource.PlaySound(SEType.Attack); //アタックSE起動
                 StartCoroutine(WaitAnimation(PlayerAction.attack));
-                weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction);
+                weaponManager.Attack(WeaponType.bubble, this.transform.position,this.direction,this);
                 break;
         }
+    }
+
+    public void AttackHit()
+    {
+        Debug.Log("受け取った");
+        playerSoundSource.PlaySound(SEType.AttackHit);
     }
 }

@@ -277,6 +277,34 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Ending"",
+            ""id"": ""aefeb9d4-85a4-4ff1-bfe5-504396bb4199"",
+            ""actions"": [
+                {
+                    ""name"": ""ClickToMoveTitle"",
+                    ""type"": ""Button"",
+                    ""id"": ""68c78ea9-dd2b-48c5-8b5d-df3f8b585597"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""44dac26e-641f-4e2a-86a5-2b93ec10e47c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ClickToMoveTitle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -298,6 +326,9 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_Player1debug_OnLeftMove = m_Player1debug.FindAction("OnLeftMove", throwIfNotFound: true);
         m_Player1debug_OnJump = m_Player1debug.FindAction("OnJump", throwIfNotFound: true);
         m_Player1debug_Attack = m_Player1debug.FindAction("Attack", throwIfNotFound: true);
+        // Ending
+        m_Ending = asset.FindActionMap("Ending", throwIfNotFound: true);
+        m_Ending_ClickToMoveTitle = m_Ending.FindAction("ClickToMoveTitle", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -557,6 +588,52 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         }
     }
     public Player1debugActions @Player1debug => new Player1debugActions(this);
+
+    // Ending
+    private readonly InputActionMap m_Ending;
+    private List<IEndingActions> m_EndingActionsCallbackInterfaces = new List<IEndingActions>();
+    private readonly InputAction m_Ending_ClickToMoveTitle;
+    public struct EndingActions
+    {
+        private @GameInputs m_Wrapper;
+        public EndingActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ClickToMoveTitle => m_Wrapper.m_Ending_ClickToMoveTitle;
+        public InputActionMap Get() { return m_Wrapper.m_Ending; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(EndingActions set) { return set.Get(); }
+        public void AddCallbacks(IEndingActions instance)
+        {
+            if (instance == null || m_Wrapper.m_EndingActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_EndingActionsCallbackInterfaces.Add(instance);
+            @ClickToMoveTitle.started += instance.OnClickToMoveTitle;
+            @ClickToMoveTitle.performed += instance.OnClickToMoveTitle;
+            @ClickToMoveTitle.canceled += instance.OnClickToMoveTitle;
+        }
+
+        private void UnregisterCallbacks(IEndingActions instance)
+        {
+            @ClickToMoveTitle.started -= instance.OnClickToMoveTitle;
+            @ClickToMoveTitle.performed -= instance.OnClickToMoveTitle;
+            @ClickToMoveTitle.canceled -= instance.OnClickToMoveTitle;
+        }
+
+        public void RemoveCallbacks(IEndingActions instance)
+        {
+            if (m_Wrapper.m_EndingActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IEndingActions instance)
+        {
+            foreach (var item in m_Wrapper.m_EndingActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_EndingActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public EndingActions @Ending => new EndingActions(this);
     public interface IPlayer1Actions
     {
         void OnOnMove(InputAction.CallbackContext context);
@@ -576,5 +653,9 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         void OnOnLeftMove(InputAction.CallbackContext context);
         void OnOnJump(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+    }
+    public interface IEndingActions
+    {
+        void OnClickToMoveTitle(InputAction.CallbackContext context);
     }
 }

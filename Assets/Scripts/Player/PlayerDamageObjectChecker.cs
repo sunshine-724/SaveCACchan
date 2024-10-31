@@ -30,7 +30,23 @@ public class PlayerDamageObjectChecker : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacles"))
+        {
+            Debug.Log("障害物と衝突しました");
+            isDamaged = true;
+            DecreaseHealth();
+        }
+    }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacles"))
+        {
+            isDamaged = false;
+        }
+    }
 
     void DecreaseHealth()
     {

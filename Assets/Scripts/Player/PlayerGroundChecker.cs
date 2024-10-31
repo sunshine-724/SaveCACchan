@@ -25,7 +25,7 @@ public class PlayerGroundChecker : MonoBehaviour
         //coll.enabled = false;
 
         Vector3 tmp = transform.position;
-        tmp.y -= 4.0f; //自分自身を判定しないように補正を加える
+        tmp.y -= 3.05f; //自分自身を判定しないように補正を加える
 
         //3つのrayで接地判定する
         Vector3 raypos = tmp;
@@ -46,7 +46,6 @@ public class PlayerGroundChecker : MonoBehaviour
         {
             if (Collision(hit.collider))
             {
-                Debug.Log(hit.collider.gameObject);
                 isGrounded = true;
                 return;
             }
@@ -93,13 +92,13 @@ public class PlayerGroundChecker : MonoBehaviour
     {
         if (collider.CompareTag("Ground") || collider.CompareTag("Obstacles"))
         {
-            Debug.Log("true");
+            //Debug.Log("true");
             lastGround = collider.gameObject; //最後に接地したゲームオブジェクトを保存
             return true;
         }
         else
         {
-            Debug.Log("false");
+            //Debug.Log("false");
             return false;
         }
     }

@@ -60,7 +60,7 @@ MonoBehaviour:
   cameraSensor: {fileID: 0}
   weaponManager: {fileID: 0}
   uiManager: {fileID: 0}
-  HP: 0
+  HP: 3
   weaponType: 0
   horizonSpeed: 10
   verticalSpeed: 60
@@ -69,6 +69,7 @@ MonoBehaviour:
   animPlayer1: {fileID: 1761255992058493274}
   playerSoundSource: {fileID: 8460364722220426796}
   inputMode: 1
+  changeScene: {fileID: 0}
   timeoutDuration: 0.3
 --- !u!114 &7074202214651353932
 MonoBehaviour:
@@ -105,7 +106,7 @@ MonoBehaviour:
     m_ActionName: Player/Jump
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 8b2a8529-af44-4df1-9ce7-bc490213be83
+  m_DefaultActionMap: Player1
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &588943327255963417

@@ -6,6 +6,24 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 461342304ba964712bde2e3b2c689fb8
+  - enabled: 1
     path: Assets/Scenes/TutorialStage.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    guid: 55548d4f8faf041a8bef7091adb0fed9
+  - enabled: 1
+    path: Assets/Scenes/MainStage.unity
+    guid: 2233e1fa6fb0945559ab1888a28adc18
+  - enabled: 1
+    path: Assets/Scenes/GameClear_MainStage.unity
+    guid: f95ca9a9515ce49bf94b552de2e45186
+  - enabled: 1
+    path: Assets/Scenes/GameClear_Tutorial.unity
+    guid: c49b094b7126843a5804b2d9293a01e2
+  - enabled: 1
+    path: Assets/Scenes/GameOver_MainStage.unity
+    guid: b155d95e346eb475ea1120b44639e959
+  - enabled: 1
+    path: Assets/Scenes/GameOver_TutorialStage.unity
+    guid: 0d6e3cb2ba92746b9b35f39879a57d42
   m_configObjects: {}
