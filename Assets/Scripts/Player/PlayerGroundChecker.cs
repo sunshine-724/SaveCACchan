@@ -93,13 +93,13 @@ public class PlayerGroundChecker : MonoBehaviour
     {
         if (collider.CompareTag("Ground") || collider.CompareTag("Obstacles"))
         {
-            Debug.Log("true");
+            //Debug.Log("true");
             lastGround = collider.gameObject; //最後に接地したゲームオブジェクトを保存
             return true;
         }
         else
         {
-            Debug.Log("false");
+            //Debug.Log("false");
             return false;
         }
     }

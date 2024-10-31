@@ -25,6 +25,8 @@ public class Player2 : MonoBehaviour
     //プレイヤー2に関するSE
     [SerializeField] PlayerSoundSource playerSoundSource;
 
+    private const float POSITONZ = 300f;
+
     private void Awake()
     {
         playerInput = this.GetComponent<PlayerInput>();
@@ -60,7 +62,7 @@ public class Player2 : MonoBehaviour
     public void chaseCAC(Vector3 position)
     {
         point = position;
-        position.z += 1.0f;
+        position.z = POSITONZ;
         this.transform.position = position;
     }
 

@@ -68,6 +68,8 @@ public class Player1 : MonoBehaviour
     [SerializeField] InputMode inputMode = InputMode.keyboardAndGamePad;
     Vector2 moveInput; //スティックの入力量
 
+    [SerializeField] ChangeScene changeScene;
+
 
     //デバッグモード(InputMode.keyboard)のみ
     float lastInputTime;
@@ -391,6 +393,13 @@ public class Player1 : MonoBehaviour
             Debug.Log("空中にいるためジャンプできませんでした");
             return;
         }
+
+        if (isCurrentTriggerAnimation())
+        {
+            Debug.Log("トリガーアニメーションが実行中です");
+            return;
+        }
+
         float value = ctx.ReadValue<float>();
         Vector2 v = new Vector2(rb.velocity.x, value*verticalSpeed);
 
@@ -401,6 +410,7 @@ public class Player1 : MonoBehaviour
         //    animPlayer1.SetBool("isLeftRun", false);
         //}
 
+        //ジャンプをする際に走るモーション中ならモーションを強制終了する権利を得る。
         if(((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun) || ((int)animPlayer1.GetFloat("BlendParam") == (float)PlayerState.LeftRun))
         {
             isPriorityAnimation = true;
@@ -413,8 +423,10 @@ public class Player1 : MonoBehaviour
         Debug.Log("ジャンプしています");
     }
 
+    //Idleを強制キャンセルし、トリガーアニメーションを実行。実行後再びIdleを起動
     private IEnumerator WaitAnimation(PlayerAction playerAction) {
 
+        //トリガーアニメーション実行完了まで待機
         switch (playerAction)
         {
             case PlayerAction.jump:
@@ -435,6 +447,7 @@ public class Player1 : MonoBehaviour
                 break;
         }
 
+        //もし走るモーションの強制終了権を持っていたら解除し、終了前のアニメーションを再び表示させる
         if (isPriorityAnimation)
         {
             isPriorityAnimation = false;
@@ -469,6 +482,18 @@ public class Player1 : MonoBehaviour
         // アタックアニメーションの進行状態を確認
         AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Attack"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    //もし何かしらのトリガーアニメーション実行中であればtrue,違うければfalse
+    private bool isCurrentTriggerAnimation()
+    {
+        AnimatorStateInfo stateInfo = animPlayer1.GetCurrentAnimatorStateInfo(0);
+        if (!stateInfo.IsName("Idle"))
         {
             return true;
         }
@@ -514,10 +539,19 @@ public class Player1 : MonoBehaviour
             StartCoroutine(AffectInvincible()); //一定時間無敵を付与する
         }
 
+        Debug.Log(HP);
         //もしHPが0になったら
         if (HP == 0)
         {
-
+            switch (changeScene.ReadCurrntScene())
+            {
+                case Scenes.MainStage:
+                    changeScene.MoveGameOver_MainStage();
+                    break;
+                case Scenes.TutorialStage:
+                    changeScene.MoveGameOver_Tutorial();
+                    break;
+            }
         }
     }
 
@@ -532,6 +566,11 @@ public class Player1 : MonoBehaviour
     //受け取った武器に応じて攻撃する
     public void Attack(InputAction.CallbackContext ctx)
     {
+        if (isCurrentTriggerAnimation())
+        {
+            Debug.Log("トリガーアニメーションが実行中です");
+            return;
+        }
         switch (weaponType)
         {
             case WeaponType.bubble:
