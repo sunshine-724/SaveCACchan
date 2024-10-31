@@ -9125,8 +9125,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2195830884998452802, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
+      propertyPath: footingRadius
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2195830884998452802, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
       propertyPath: notAreaRadius
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3857698629403312076, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
       propertyPath: player1

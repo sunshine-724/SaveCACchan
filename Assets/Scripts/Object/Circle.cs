@@ -16,11 +16,16 @@ public class Circle : MonoBehaviour
         centerPoint = transform.position;
     }
 
+    private void Update()
+    {
+        centerPoint = transform.position;
+    }
+
     // 与えられた座標がサークルの領域内にあるかどうか
     public bool IsPointInCircle(Vector2 clickPoint)
     {
         float clickRadius = Vector2.Distance(centerPoint, clickPoint);
-
+        Debug.Log(clickRadius);
         return notAreaRadius <= clickRadius && clickRadius <= footingRadius;
     }
 }
