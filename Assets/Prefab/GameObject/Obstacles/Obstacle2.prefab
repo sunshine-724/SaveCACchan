@@ -185,7 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   block_destx: 0
   block_desty: 0
-  moving_speed: 0.05
+  moving_speed: 0.1
 --- !u!50 &4700186179181883295
 Rigidbody2D:
   serializedVersion: 4
