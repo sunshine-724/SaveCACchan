@@ -305,6 +305,74 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Player1_joy"",
+            ""id"": ""44354592-1d92-4250-8b8a-0cb104f99599"",
+            ""actions"": [
+                {
+                    ""name"": ""OnMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""8704fb7e-a9e4-4806-b455-4a1445f993d5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OnJump"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5ba890e-5a5a-419f-a295-9cd21c366cf6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""873ea5c2-a1ec-4841-a710-32ebbdee8ab6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e3d4c433-7bbd-45d2-8a33-12252a479861"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3124ca08-cc90-4098-a49f-60422a286d0d"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""046b2ffd-b481-4721-afd7-546510143d95"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -329,6 +397,11 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         // Ending
         m_Ending = asset.FindActionMap("Ending", throwIfNotFound: true);
         m_Ending_ClickToMoveTitle = m_Ending.FindAction("ClickToMoveTitle", throwIfNotFound: true);
+        // Player1_joy
+        m_Player1_joy = asset.FindActionMap("Player1_joy", throwIfNotFound: true);
+        m_Player1_joy_OnMove = m_Player1_joy.FindAction("OnMove", throwIfNotFound: true);
+        m_Player1_joy_OnJump = m_Player1_joy.FindAction("OnJump", throwIfNotFound: true);
+        m_Player1_joy_Attack = m_Player1_joy.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -634,6 +707,68 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         }
     }
     public EndingActions @Ending => new EndingActions(this);
+
+    // Player1_joy
+    private readonly InputActionMap m_Player1_joy;
+    private List<IPlayer1_joyActions> m_Player1_joyActionsCallbackInterfaces = new List<IPlayer1_joyActions>();
+    private readonly InputAction m_Player1_joy_OnMove;
+    private readonly InputAction m_Player1_joy_OnJump;
+    private readonly InputAction m_Player1_joy_Attack;
+    public struct Player1_joyActions
+    {
+        private @GameInputs m_Wrapper;
+        public Player1_joyActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OnMove => m_Wrapper.m_Player1_joy_OnMove;
+        public InputAction @OnJump => m_Wrapper.m_Player1_joy_OnJump;
+        public InputAction @Attack => m_Wrapper.m_Player1_joy_Attack;
+        public InputActionMap Get() { return m_Wrapper.m_Player1_joy; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(Player1_joyActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayer1_joyActions instance)
+        {
+            if (instance == null || m_Wrapper.m_Player1_joyActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_Player1_joyActionsCallbackInterfaces.Add(instance);
+            @OnMove.started += instance.OnOnMove;
+            @OnMove.performed += instance.OnOnMove;
+            @OnMove.canceled += instance.OnOnMove;
+            @OnJump.started += instance.OnOnJump;
+            @OnJump.performed += instance.OnOnJump;
+            @OnJump.canceled += instance.OnOnJump;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
+        }
+
+        private void UnregisterCallbacks(IPlayer1_joyActions instance)
+        {
+            @OnMove.started -= instance.OnOnMove;
+            @OnMove.performed -= instance.OnOnMove;
+            @OnMove.canceled -= instance.OnOnMove;
+            @OnJump.started -= instance.OnOnJump;
+            @OnJump.performed -= instance.OnOnJump;
+            @OnJump.canceled -= instance.OnOnJump;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
+        }
+
+        public void RemoveCallbacks(IPlayer1_joyActions instance)
+        {
+            if (m_Wrapper.m_Player1_joyActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlayer1_joyActions instance)
+        {
+            foreach (var item in m_Wrapper.m_Player1_joyActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_Player1_joyActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public Player1_joyActions @Player1_joy => new Player1_joyActions(this);
     public interface IPlayer1Actions
     {
         void OnOnMove(InputAction.CallbackContext context);
@@ -657,5 +792,11 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     public interface IEndingActions
     {
         void OnClickToMoveTitle(InputAction.CallbackContext context);
+    }
+    public interface IPlayer1_joyActions
+    {
+        void OnOnMove(InputAction.CallbackContext context);
+        void OnOnJump(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }
