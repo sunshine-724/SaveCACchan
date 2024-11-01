@@ -23,7 +23,7 @@ public class WeaponManager : MonoBehaviour
     {
         //Debug.Log(weaponType + "に切り替えました");
         DoActive(weaponType);
-        uiManager.ChangeDisplayWeapon(weaponType);
+        //uiManager.ChangeDisplayWeapon(weaponType);
     }
 
     //指定された武器以外全て非アクティブにする(UI)

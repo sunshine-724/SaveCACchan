@@ -123,33 +123,33 @@ public class Player1 : MonoBehaviour
         point = rb.transform.position;
         player2.chaseCAC(this.transform.position);
 
-        if(inputMode == InputMode.keyboard)
-        {
-            // ReadValue<float>()でキーの値を取得（押されている間は1、離されたら0）
-            float DkeyHeld = HoldDKeyAction.ReadValue<float>();
-            float AkeyHeld = HoldAKeyAction.ReadValue<float>();
+        //if(inputMode == InputMode.keyboard)
+        //{
+        //    // ReadValue<float>()でキーの値を取得（押されている間は1、離されたら0）
+        //    float DkeyHeld = HoldDKeyAction.ReadValue<float>();
+        //    float AkeyHeld = HoldAKeyAction.ReadValue<float>();
 
-            if (DkeyHeld == 1f)
-            {
-                Debug.Log("Dキーが押され続けています。");
-                Vector2 value = new Vector2(DkeyHeld, 0.0f);
-                Move(value);
-            }else if(AkeyHeld == 1f)
-            {
-                Debug.Log("Aキーが押され続けています。");
-                Vector2 value = new Vector2(-1 * AkeyHeld, 0.0f);
-                Move(value);
-            }else
-            {
-                Debug.Log("キーが離されています。");
-                //もし一定時間入力がなければ止まる(debugモードのみ)
-                if (Time.time - lastInputTime > timeoutDuration)
-                {
-                    Vector2 stopVector2 = new Vector2(0.0f, rb.velocity.y);
-                    Move(stopVector2);
-                }
-            }
-        }
+        //    if (DkeyHeld == 1f)
+        //    {
+        //        Debug.Log("Dキーが押され続けています。");
+        //        Vector2 value = new Vector2(DkeyHeld, 0.0f);
+        //        Move(value);
+        //    }else if(AkeyHeld == 1f)
+        //    {
+        //        Debug.Log("Aキーが押され続けています。");
+        //        Vector2 value = new Vector2(-1 * AkeyHeld, 0.0f);
+        //        Move(value);
+        //    }else
+        //    {
+        //        Debug.Log("キーが離されています。");
+        //        //もし一定時間入力がなければ止まる(debugモードのみ)
+        //        if (Time.time - lastInputTime > timeoutDuration)
+        //        {
+        //            Vector2 stopVector2 = new Vector2(0.0f, rb.velocity.y);
+        //            Move(stopVector2);
+        //        }
+        //    }
+        //}
 
         if(Mathf.Abs(rb.velocity.x) > horizonSpeed)
         {
@@ -197,7 +197,35 @@ public class Player1 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        if (inputMode == InputMode.keyboard)
+        {
+            // ReadValue<float>()でキーの値を取得（押されている間は1、離されたら0）
+            float DkeyHeld = HoldDKeyAction.ReadValue<float>();
+            float AkeyHeld = HoldAKeyAction.ReadValue<float>();
+
+            if (DkeyHeld == 1f)
+            {
+                Debug.Log("Dキーが押され続けています。");
+                Vector2 value = new Vector2(DkeyHeld, 0.0f);
+                Move(value);
+            }
+            else if (AkeyHeld == 1f)
+            {
+                Debug.Log("Aキーが押され続けています。");
+                Vector2 value = new Vector2(-1 * AkeyHeld, 0.0f);
+                Move(value);
+            }
+            else
+            {
+                Debug.Log("キーが離されています。");
+                //もし一定時間入力がなければ止まる(debugモードのみ)
+                if (Time.time - lastInputTime > timeoutDuration)
+                {
+                    Vector2 stopVector2 = new Vector2(0.0f, rb.velocity.y);
+                    Move(stopVector2);
+                }
+            }
+        }
     }
 
     private void OnEnable()
@@ -255,6 +283,7 @@ public class Player1 : MonoBehaviour
     private void OnMove(InputAction.CallbackContext ctx)
     {
         Vector2 value = ctx.ReadValue<Vector2>();
+
         value.y = 0.0f;
         Move(value);
     }
@@ -334,6 +363,13 @@ public class Player1 : MonoBehaviour
             return;
         }
         value.x = value.x * horizonSpeed;
+        Debug.Log(value.x);
+        if(inputMode == InputMode.keyboard)
+        {
+            float hosei = 50.0f;
+            rb.AddForce(value * hosei*Time.deltaTime, ForceMode2D.Impulse);
+            return;
+        }
 
         rb.AddForce(value, ForceMode2D.Impulse); //プレイヤーに力を加え移動させる
     }

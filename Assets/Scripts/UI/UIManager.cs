@@ -13,23 +13,23 @@ public class UIManager : MonoBehaviour
 
     public void ChangeDisplayWeapon(WeaponType type)
     {
-        DoActiveWeapon(type);
+        //DoActiveWeapon(type);
     }
 
     void DoActiveWeapon(WeaponType type)
     {
-        foreach(GameObject obj in displayWeaponList)
-        {
-            Weapon weapon = obj.GetComponent<Weapon>();
-            if(weapon != null && weapon.type == type)
-            {
-                displayWeapon = obj;
-                obj.SetActive(true);
-                continue;
-            }
+        //foreach(GameObject obj in displayWeaponList)
+        //{
+        //    Weapon weapon = obj.GetComponent<Weapon>();
+        //    if(weapon != null && weapon.type == type)
+        //    {
+        //        displayWeapon = obj;
+        //        obj.SetActive(true);
+        //        continue;
+        //    }
 
-            obj.SetActive(false);
-        }
+        //    obj.SetActive(false);
+        //}
     }
 
     public void ChangeDisplayFooting(FootingType type)
