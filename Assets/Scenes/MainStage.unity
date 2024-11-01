@@ -14215,7 +14215,7 @@ PrefabInstance:
       objectReference: {fileID: 257983806}
     - target: {fileID: 7074202214651353932, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: m_DefaultActionMap
-      value: 44354592-1d92-4250-8b8a-0cb104f99599
+      value: 8b2a8529-af44-4df1-9ce7-bc490213be83
       objectReference: {fileID: 0}
     - target: {fileID: 8460364722220426796, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: audioSources.Array.size
@@ -14720,11 +14720,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 634273766289177058, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2195830884998452802, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
       propertyPath: footingRadius
-      value: 6
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 2195830884998452802, guid: 6ddc811a58d894f4a94874f4aa34dbac, type: 3}
       propertyPath: notAreaRadius

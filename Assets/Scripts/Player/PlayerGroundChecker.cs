@@ -32,8 +32,8 @@ public class PlayerGroundChecker : MonoBehaviour
         Vector3 rayposLeft = tmp;
         Vector3 rayposRight = tmp;
 
-        rayposLeft.x -= 1.0f;
-        rayposRight.x += 1.0f;
+        rayposLeft.x -= 0.91f;
+        rayposRight.x += 1.33f;
 
 
         RaycastHit2D hit = Physics2D.Raycast(raypos, Vector2.down, 2.0f);

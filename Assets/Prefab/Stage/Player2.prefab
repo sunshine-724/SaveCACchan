@@ -54,6 +54,7 @@ MonoBehaviour:
   circle: {fileID: 2195830884998452802}
   weaponManager: {fileID: 0}
   footingType: 0
+  blankTime: 2
   playerSoundSource: {fileID: 615923872335780797}
 --- !u!114 &3983475782706604806
 MonoBehaviour:
@@ -150,7 +151,7 @@ Transform:
   m_GameObject: {fileID: 6147238795364311465}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.55, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 13, y: 13, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -221,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   footingRadius: 6.5
+  notAreaRadius: 3
 --- !u!1 &9091381559703516372
 GameObject:
   m_ObjectHideFlags: 0
