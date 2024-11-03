@@ -560,12 +560,13 @@ public class Player1 : MonoBehaviour
         //無敵ではなかったら
         if (!invincible)
         {
-            //プレイヤーを止める
-            if(rb != null)
-            {
-                Vector3 tmp = new Vector3(0.0f, rb.velocity.y, 0);
-                rb.velocity = tmp;
-            }
+            ////プレイヤーを止める
+            //if(rb != null)
+            //{
+            //    Vector3 tmp = new Vector3(0.0f, rb.velocity.y, 0);
+            //    rb.velocity = tmp;
+            //}
+
             
             HP--;
             playerSoundSource.PlaySound(SEType.Damaged); //ダメージSEを起動
