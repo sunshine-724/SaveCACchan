@@ -8497,7 +8497,7 @@ PrefabInstance:
       objectReference: {fileID: 216203870}
     - target: {fileID: 1809631733237713563, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: inputMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1809631733237713563, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: uiManager
@@ -8525,7 +8525,7 @@ PrefabInstance:
       objectReference: {fileID: 6200000, guid: 436629effa70b47f8905d5db6f1d956e, type: 2}
     - target: {fileID: 7074202214651353932, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: m_DefaultActionMap
-      value: 8b2a8529-af44-4df1-9ce7-bc490213be83
+      value: 5c5c5b58-ea06-4dfc-92f2-7710cd5fa26e
       objectReference: {fileID: 0}
     - target: {fileID: 8460364722220426796, guid: d143ff9a367ca46a0ad5deae6d48c389, type: 3}
       propertyPath: audioSources.Array.size
