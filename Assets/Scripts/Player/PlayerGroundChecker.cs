@@ -90,13 +90,13 @@ public class PlayerGroundChecker : MonoBehaviour
 
     private bool Collision(Collider2D collider)
     {
-        if (collider.CompareTag("Ground") || collider.CompareTag("Obstacles"))
+        if (collider.CompareTag("Ground") || (collider.GetComponent<Obstacle3>() != null))
         {
             //Debug.Log("true");
             lastGround = collider.gameObject; //最後に接地したゲームオブジェクトを保存
             return true;
         }
-        else
+        else 
         {
             //Debug.Log("false");
             return false;
