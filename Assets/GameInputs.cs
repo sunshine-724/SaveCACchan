@@ -96,15 +96,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             ""id"": ""4b026d7f-4ae8-4015-8221-9d6f833086de"",
             ""actions"": [
                 {
-                    ""name"": ""putFooting"",
-                    ""type"": ""Button"",
-                    ""id"": ""7793e188-f4bf-4bdc-b46b-7cea8a22859b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""changeKindOfFooting"",
                     ""type"": ""Button"",
                     ""id"": ""e7c67352-d2c1-4ee4-b3b5-a7c4d0546a13"",
@@ -133,17 +124,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""507ff07f-9cbb-4d95-bd84-a8c9000962ca"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""putFooting"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""e48d8d95-2e49-4e52-989c-6daa57c99237"",
@@ -384,7 +364,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_Player1_Attack = m_Player1.FindAction("Attack", throwIfNotFound: true);
         // Player2_support
         m_Player2_support = asset.FindActionMap("Player2_support", throwIfNotFound: true);
-        m_Player2_support_putFooting = m_Player2_support.FindAction("putFooting", throwIfNotFound: true);
         m_Player2_support_changeKindOfFooting = m_Player2_support.FindAction("changeKindOfFooting", throwIfNotFound: true);
         m_Player2_support_changeLengthOfFooting = m_Player2_support.FindAction("changeLengthOfFooting", throwIfNotFound: true);
         m_Player2_support_changeKindOfWeapon = m_Player2_support.FindAction("changeKindOfWeapon", throwIfNotFound: true);
@@ -525,7 +504,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     // Player2_support
     private readonly InputActionMap m_Player2_support;
     private List<IPlayer2_supportActions> m_Player2_supportActionsCallbackInterfaces = new List<IPlayer2_supportActions>();
-    private readonly InputAction m_Player2_support_putFooting;
     private readonly InputAction m_Player2_support_changeKindOfFooting;
     private readonly InputAction m_Player2_support_changeLengthOfFooting;
     private readonly InputAction m_Player2_support_changeKindOfWeapon;
@@ -533,7 +511,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     {
         private @GameInputs m_Wrapper;
         public Player2_supportActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @putFooting => m_Wrapper.m_Player2_support_putFooting;
         public InputAction @changeKindOfFooting => m_Wrapper.m_Player2_support_changeKindOfFooting;
         public InputAction @changeLengthOfFooting => m_Wrapper.m_Player2_support_changeLengthOfFooting;
         public InputAction @changeKindOfWeapon => m_Wrapper.m_Player2_support_changeKindOfWeapon;
@@ -546,9 +523,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_Player2_supportActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_Player2_supportActionsCallbackInterfaces.Add(instance);
-            @putFooting.started += instance.OnPutFooting;
-            @putFooting.performed += instance.OnPutFooting;
-            @putFooting.canceled += instance.OnPutFooting;
             @changeKindOfFooting.started += instance.OnChangeKindOfFooting;
             @changeKindOfFooting.performed += instance.OnChangeKindOfFooting;
             @changeKindOfFooting.canceled += instance.OnChangeKindOfFooting;
@@ -562,9 +536,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IPlayer2_supportActions instance)
         {
-            @putFooting.started -= instance.OnPutFooting;
-            @putFooting.performed -= instance.OnPutFooting;
-            @putFooting.canceled -= instance.OnPutFooting;
             @changeKindOfFooting.started -= instance.OnChangeKindOfFooting;
             @changeKindOfFooting.performed -= instance.OnChangeKindOfFooting;
             @changeKindOfFooting.canceled -= instance.OnChangeKindOfFooting;
@@ -777,7 +748,6 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     }
     public interface IPlayer2_supportActions
     {
-        void OnPutFooting(InputAction.CallbackContext context);
         void OnChangeKindOfFooting(InputAction.CallbackContext context);
         void OnChangeLengthOfFooting(InputAction.CallbackContext context);
         void OnChangeKindOfWeapon(InputAction.CallbackContext context);

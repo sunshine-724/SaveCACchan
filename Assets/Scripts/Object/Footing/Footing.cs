@@ -273,7 +273,7 @@ public class Footing : MonoBehaviour
         {
             case FootingType.stopRectangle:
                 //左に伸ばすのかどうか
-                if (currentPoint.x - (sizeX / 2) < point.x && (point.x) < currentPoint.x - (sizeX/2) + error)
+                if (currentPoint.x - (sizeX / 2) < point.x && (point.x) < currentPoint.x)
                 {
                     if (Mathf.Abs(point.y - this.currentPoint.y) < this.GetComponent<Renderer>().bounds.size.y)
                     {
@@ -282,7 +282,7 @@ public class Footing : MonoBehaviour
                         canChangeRightLength = false;
                         return true;
                     }
-                }else if((currentPoint.x + (sizeX/2) - error) < point.x && point.x < (currentPoint.x + (sizeX/2))){
+                }else if((currentPoint.x) < point.x && point.x < (currentPoint.x + (sizeX/2))){
                     //右に伸ばすかどうか
                     if (Mathf.Abs(point.y - this.currentPoint.y) < this.GetComponent<Renderer>().bounds.size.y)
                     {

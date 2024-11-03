@@ -74,15 +74,6 @@
             "id": "4b026d7f-4ae8-4015-8221-9d6f833086de",
             "actions": [
                 {
-                    "name": "putFooting",
-                    "type": "Button",
-                    "id": "7793e188-f4bf-4bdc-b46b-7cea8a22859b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "changeKindOfFooting",
                     "type": "Button",
                     "id": "e7c67352-d2c1-4ee4-b3b5-a7c4d0546a13",
@@ -111,17 +102,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "507ff07f-9cbb-4d95-bd84-a8c9000962ca",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "putFooting",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "e48d8d95-2e49-4e52-989c-6daa57c99237",

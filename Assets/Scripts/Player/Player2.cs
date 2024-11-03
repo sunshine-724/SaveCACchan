@@ -46,7 +46,6 @@ public class Player2 : MonoBehaviour
     private void OnEnable()
     {
         //イベント登録
-        playerInput.actions["putFooting"].started += PutFooting;
         playerInput.actions["changeLengthOfFooting"].performed += StartExtendFooting;
         playerInput.actions["changeKindOfFooting"].performed += ChangeFootingType;
         playerInput.actions["changeKindOfWeapon"].performed += ChangeWeapon;
@@ -54,10 +53,8 @@ public class Player2 : MonoBehaviour
 
     private void OnDisable()
     {
-        playerInput.actions["putFooting"].started -= PutFooting;
         playerInput.actions["changeLengthOfFooting"].performed -= StartExtendFooting;
         playerInput.actions["changeKindOfFooting"].performed -= ChangeFootingType;
-
         playerInput.actions["changeKindOfWeapon"].performed -= ChangeWeapon;
     }
 
@@ -78,8 +75,30 @@ public class Player2 : MonoBehaviour
         footingManager.ChangeFooting(footingType);
     }
 
-    //足場を置く
-    void PutFooting(InputAction.CallbackContext ctx)
+    ////足場を置く
+    //void PutFooting(InputAction.CallbackContext ctx)
+    //{
+    //    bool isInstalled; //足場を接地したかどうか
+    //    if (!isinstall)
+    //    {
+    //        return; //指定した時間経過していないので足場をおけない
+    //    }
+
+    //    isInstalled = footingManager.PutFooting(cursorController.point, footingType);
+    //    if (isInstalled)
+    //    {
+    //        playerSoundSource.PlaySound(SEType.Asiba_put);
+    //        isinstall = false;
+    //        StartCoroutine(InstalledFooting());  //一定時間足場をおけないようにする
+    //    }
+    //    else
+    //    {
+
+    //    }
+    //}
+
+    //足場を置く(これが呼び出されるのはクリックした所に足場が存在しない時
+    void PutFooting()
     {
         bool isInstalled; //足場を接地したかどうか
         if (!isinstall)
@@ -87,9 +106,10 @@ public class Player2 : MonoBehaviour
             return; //指定した時間経過していないので足場をおけない
         }
 
-        isInstalled = footingManager.PutFooting(cursorController.point,footingType);
+        isInstalled = footingManager.PutFooting(cursorController.point, footingType); //足場を接地できたかどうか
         if (isInstalled)
         {
+            //もし接地できたら
             playerSoundSource.PlaySound(SEType.Asiba_put);
             isinstall = false;
             StartCoroutine(InstalledFooting());  //一定時間足場をおけないようにする
@@ -115,7 +135,8 @@ public class Player2 : MonoBehaviour
             }
             else
             {
-                Debug.Log("クリックを開始しました");
+                //クリックした所に足場が見つからなかったら、足場を置きに行く
+                PutFooting();
             }
             isClicked = true;
         }
