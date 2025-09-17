@@ -5,6 +5,7 @@ on:
     branches:
       - main  # メインブランチにプッシュされたときに実行
       - dev
+      - test
   workflow_dispatch:  # 手動でワークフローを実行可能にする
 
 permissions:
