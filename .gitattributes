@@ -1,0 +1,4 @@
+SaveCACchan/Build/*.data* filter=lfs diff=lfs merge=lfs -text
+SaveCACchan/Build/*.framework.js* filter=lfs diff=lfs merge=lfs -text
+SaveCACchan/Build/*.wasm* filter=lfs diff=lfs merge=lfs -text
+SaveCACchan/Build/*.unityweb filter=lfs diff=lfs merge=lfs -text
