@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          lfs: true # lfsのポインタを実体に変換する
 
       - name: Setup Pages
         id: pages
@@ -28,7 +30,8 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'SaveCACchan'  # このフォルダ内のコンテンツをすべてアップロード
+          # 公開したいファイル群が含まれるフォルダを指定
+          path: 'SaveCACchan'
 
   deploy:
     name: Deploy
